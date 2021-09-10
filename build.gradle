@@ -25,7 +25,7 @@ tasks.withType(Javadoc) { options.encoding = "UTF-8" }
 tasks.withType(JavaCompile) { options.encoding = "UTF-8" }
 
 group = 'com.github.myibu'
-archivesBaseName = "algorigthm-java"
+archivesBaseName = "algorithm-java"
 version = "0.0.1"
 
 repositories {
@@ -50,11 +50,11 @@ uploadArchives {
             }
 
             pom.project {
-                name 'algorigthm-java'
+                name 'algorithm-java'
                 packaging 'jar'
                 // optionally artifactId can be defined here
                 description 'General algorighm implements in java'
-                url 'https://github.com/myibu/algorigthm-java'
+                url 'https://github.com/myibu/algorithm-java'
 
                 scm {
                     connection 'scm:svn:http://foo.googlecode.com/svn/trunk/'
