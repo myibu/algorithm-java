@@ -16,7 +16,7 @@ Reference to: [SHA256.pdf](./docs/SHA256.pdf)
 <dependency>
   <groupId>com.github.myibu</groupId>
   <artifactId>algorithm-java</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.1a</version>
 </dependency>
 ```
 

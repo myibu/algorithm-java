@@ -20,6 +20,13 @@ public class AlgorithmTest {
     }
 
     @Test
+    public void testDefaultSipHash() throws Exception {
+        SipHash sipHash = new SipHash();
+        long hashRes = sipHash.hash("12345678");
+        System.out.println(Long.toHexString(hashRes));
+    }
+
+    @Test
     public void testSipHash() throws Exception {
         byte[] hashSeed = new byte[]{
                 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,

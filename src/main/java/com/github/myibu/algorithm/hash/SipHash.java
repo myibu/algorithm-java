@@ -1,5 +1,11 @@
 package com.github.myibu.algorithm.hash;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.nio.file.Paths;
+
 /**
  * SipHash 2-4 algorithm
  * @author myibu
@@ -7,9 +13,41 @@ package com.github.myibu.algorithm.hash;
  */
 public class SipHash {
     protected byte[] hashSeed;
-    private final int c;
-    private final int d;
+    protected int c;
+    protected int d;
     protected static final int DEFAULT_SEED_SIZE = 128 / 8;
+    private static final String LINUX_RANDOM_FILE = "/dev/urandom";
+
+    public SipHash() {
+        this.hashSeed = generateHashSeed();
+        this.c = 2;
+        this.d = 4;
+    }
+
+    private byte[] generateHashSeed() {
+        byte[] seed = new byte[DEFAULT_SEED_SIZE];
+        boolean seedInitialized = false;
+        File randomFile = Paths.get(LINUX_RANDOM_FILE).toFile();
+        if (randomFile.exists() && randomFile.canRead()) {
+            try {
+                FileInputStream fis = new FileInputStream(randomFile);
+                if (fis.read(seed, 0, seed.length) == DEFAULT_SEED_SIZE) {
+                    seedInitialized = true;
+                }
+            } catch (IOException e) {
+
+            }
+        }
+        if (!seedInitialized) {
+            for (int j = 0; j < seed.length; j++) {
+                long sec = System.currentTimeMillis() / 1000;
+                long usec = System.nanoTime();
+                long pid = Integer.parseInt(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
+                seed[j] = (byte)(sec ^  usec ^ pid);
+            }
+        }
+        return seed;
+    }
 
     public SipHash(byte[] seed) {
         this(seed, 2, 4);
