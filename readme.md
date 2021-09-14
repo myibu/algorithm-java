@@ -33,7 +33,7 @@ Reference to: [BloomFilter.pdf](./docs/BloomFilter.pdf)
 <dependency>
   <groupId>com.github.myibu</groupId>
   <artifactId>algorithm-java</artifactId>
-  <version>0.0.1b</version>
+  <version>1.0.0</version>
 </dependency>
 ```
 
