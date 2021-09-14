@@ -18,6 +18,15 @@ Reference to: [MurmurHash2.c](https://github.com/RedisBloom/RedisBloom/blob/mast
 Reference to: [BloomFilter.pdf](./docs/BloomFilter.pdf)
 
 ### Bits
+| method | remark |
+|--------|--------|
+| inverse | `~` |
+| and | `&` |
+| or | `|` |
+| xor | `^` |
+| lShift | `<<` |
+| rShift | `>>` |
+| rrShift | `>>>` |
 
 ## Installation
 ```bash
