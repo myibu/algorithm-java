@@ -11,12 +11,20 @@ Reference to: [siphash.pdf](./docs/siphash.pdf)
 ### SHA256
 Reference to: [SHA256.pdf](./docs/SHA256.pdf)
 
+### MurmurHash2
+Reference to: [MurmurHash2.c](https://github.com/RedisBloom/RedisBloom/blob/master/contrib/MurmurHash2.c)
+
+### BloomFilter
+Reference to: [BloomFilter.pdf](./docs/BloomFilter.pdf)
+
+### Bits
+
 ## Installation
 ```bash
 <dependency>
   <groupId>com.github.myibu</groupId>
   <artifactId>algorithm-java</artifactId>
-  <version>0.0.1a</version>
+  <version>0.0.1b</version>
 </dependency>
 ```
 

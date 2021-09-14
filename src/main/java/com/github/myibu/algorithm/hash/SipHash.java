@@ -3,7 +3,9 @@ package com.github.myibu.algorithm.hash;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
 /**
@@ -164,11 +166,11 @@ public class SipHash {
                 ((long)p[offset + 7]) << 56;
     }
 
-    public long hash(String key) throws Exception {
-        return sipHash(hashSeed, key.getBytes("UTF8"));
+    public long hash(String key) {
+        return sipHash(hashSeed, key.getBytes(StandardCharsets.UTF_8));
     }
 
-    public long hash(String key, byte[] hashSeed) throws Exception {
-        return sipHash(hashSeed, key.getBytes("UTF8"));
+    public long hash(String key, byte[] hashSeed)  {
+        return sipHash(hashSeed, key.getBytes(StandardCharsets.UTF_8));
     }
 }
