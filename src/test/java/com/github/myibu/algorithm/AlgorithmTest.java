@@ -1,22 +1,32 @@
 package com.github.myibu.algorithm;
 
+import com.github.myibu.algorithm.data.Bits;
+import com.github.myibu.algorithm.data.Bytes;
+import com.github.myibu.algorithm.filter.BloomFilter;
+import com.github.myibu.algorithm.hash.MurmurHash2;
 import com.github.myibu.algorithm.hash.SHA256;
 import com.github.myibu.algorithm.hash.SipHash;
+import com.github.myibu.algorithm.random.LinearCongruentialRandom;
+import com.github.myibu.algorithm.random.MersenneTwisterRandom;
+import com.github.myibu.algorithm.random.Random;
+import com.github.myibu.algorithm.random.RandomArrays;
 import com.github.myibu.algorithm.validate.IDCardChecker;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.nio.charset.StandardCharsets;
 
 public class AlgorithmTest {
     @Test
     public void testSHA256() throws Exception {
         SHA256 sha256 = new SHA256();
-        byte[] bs = sha256.encode("abc".getBytes("utf-8"));
+        byte[] bs = sha256.encode("abc".getBytes(StandardCharsets.UTF_8));
         Assert.assertEquals("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
-                ByteOperator.byteArrayToHexString(bs));
+                Bytes.byteArrayToHexString(bs));
 
-        bs = sha256.encode("this is a test message".getBytes("utf-8"));
+        bs = sha256.encode("this is a test message".getBytes(StandardCharsets.UTF_8));
         Assert.assertEquals("4e4aa09b6d80efbd684e80f54a70c1d8605625c3380f4cb012b32644a002b5be",
-                ByteOperator.byteArrayToHexString(bs));
+                Bytes.byteArrayToHexString(bs));
     }
 
     @Test
@@ -47,5 +57,56 @@ public class AlgorithmTest {
 
         id = "320125199301012563";
         assert !IDCardChecker.check(id);
+    }
+
+    @Test
+    public void testMurmurHash2() throws Exception {
+        byte[] key = "abc".getBytes(StandardCharsets.UTF_8);
+        long seed = 0x9747b28c;
+        long hash = MurmurHash2.hash(key, key.length, seed);
+        Assert.assertEquals(0x47670dfa7a2ee3bbL, hash);
+    }
+
+    @Test
+    public void testBits() throws Exception {
+        Bits bits = Bits.ofInt(25);
+        Assert.assertEquals(Bits.and(bits, Bits.ofInt(1)).toInt(), 1);
+        Assert.assertEquals(Bits.or(bits, Bits.ofInt(0xFFFFFFe6)).toInt(), 0xFFFFFFFF);
+        Assert.assertEquals(Bits.xor(bits, Bits.ofInt(25)).toInt(), 0x00000000);
+        Assert.assertEquals(Bits.inverse(bits).toInt(), 0xFFFFFFe6);
+    }
+
+    @Test
+    public void testBloomFilter() throws Exception {
+        String[] registerName = new String[] {
+                "tom", "baby", "bob", "nacy", "xiaoming",
+                "linda", "tracy", "iu", "jack", "ming"
+        };
+        BloomFilter filter = new BloomFilter();
+        filter.addAll(registerName);
+        Assert.assertFalse(filter.contains("nacyy"));
+        Assert.assertTrue(filter.contains("jack"));
+        Assert.assertTrue(filter.contains("ming"));
+        Assert.assertFalse(filter.contains("abc"));
+    }
+
+    @Test
+    public void testRandomArrays() {
+        Boolean[] a = new Boolean[]{true, true, false, false, true};
+        RandomArrays.shuffle(a);
+        System.out.println();
+    }
+
+    @Test
+    public void testRandom() {
+        Random rd = new LinearCongruentialRandom();
+        for (int i = 0; i < 10; i++) {
+            System.out.println(String.format("Linear Congruential [%d]：%d", i, rd.nextInt(10)));
+        }
+
+        Random rd1 = new MersenneTwisterRandom();
+        for (int i = 0; i < 10; i++) {
+            System.out.println(String.format("Mersenne Twister [%d]：%d", i, rd1.nextInt(10)));
+        }
     }
 }

@@ -1,11 +1,11 @@
-package com.github.myibu.algorithm;
+package com.github.myibu.algorithm.data;
 
 /**
- * operator for byte
+ * util for byte
  * @author myibu
  * Created on 2021/9/10
  */
-public class ByteOperator {
+public class Bytes {
     public static byte[] appendBytes(byte[] dest, byte[] src) {
         int tl = dest.length, sl = src.length;
         byte[] b = new byte[tl + sl];
@@ -30,20 +30,6 @@ public class ByteOperator {
         return val & 0xFFFFFFFFL;
     }
 
-    public static byte[] intTo8Bytes(int val) {
-        long unsignedVal = unsignedInt(val);
-        byte[] bs = new byte[8];
-        bs[4] = (byte) (unsignedVal >>> 24);
-        bs[5] = (byte) (unsignedVal >>> 16);
-        bs[6] = (byte) (unsignedVal >>> 8);
-        bs[7] = (byte) (unsignedVal);
-        return bs;
-    }
-
-    public static byte intToOneByte(int val) {
-        return (byte)((val >>> 24) & 0x000000FF);
-    }
-
     private static final char[] DIGITS = {
             '0' , '1' , '2' , '3' , '4' , '5' ,
             '6' , '7' , '8' , '9' , 'a' , 'b' ,
@@ -58,6 +44,10 @@ public class ByteOperator {
                 unsignedByte(bs[offset + 1]) * 65536 +
                 unsignedByte(bs[offset + 2]) * 256 +
                 unsignedByte(bs[offset + 3]);
+    }
+
+    public static long byteArrayToUnsignedInt(byte[] bs, int offset) {
+        return unsignedInt(byteArrayToInt(bs, offset));
     }
 
     public static String byteArrayToHexString(byte[] bytes) {

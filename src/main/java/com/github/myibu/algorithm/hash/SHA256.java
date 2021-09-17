@@ -1,6 +1,8 @@
 package com.github.myibu.algorithm.hash;
 
-import static com.github.myibu.algorithm.ByteOperator.*;
+import com.github.myibu.algorithm.data.Bits;
+import static com.github.myibu.algorithm.data.Bytes.*;
+
 /**
  * SHA256 algorithm
  * @author myibu
@@ -33,8 +35,9 @@ public class SHA256 {
     }
 
     private void update(byte[] data, int datalen) {
+        byte one = -128;
         // 末尾加上bit 1
-        data = appendByte(data, intToOneByte(0x80000000));
+        data = appendByte(data, one);
         // 补0
         if (data.length % 64 < 56) {
             data = appendBytes(data, new byte[56 - (data.length % 64)]);
@@ -42,7 +45,7 @@ public class SHA256 {
             data = appendBytes(data, new byte[64 + 56 - (data.length % 64)]);
         }
         // 添加消息长度的64位bit
-        data = appendBytes(data, intTo8Bytes(datalen * 8));
+        data = appendBytes(data, Bits.ofInt(datalen * 8, 64).toByteArray());
         // 处理每个消息块
         for (int i = 0; i < data.length / 64; i++) {
             byte[] block = new byte[64];
