@@ -28,12 +28,18 @@ Reference to: [BloomFilter.pdf](./docs/BloomFilter.pdf)
 | rShift | `>>` |
 | rrShift | `>>>` |
 
+### LinearCongruentialRandom
+Reference to: [LinearCongruence.pdf](./docs/LinearCongruence.pdf)
+
+### MersenneTwisterRandom
+Reference to: [MersenneTwister.pdf](./docs/MersenneTwister.pdf)
+
 ## Installation
 ```bash
 <dependency>
   <groupId>com.github.myibu</groupId>
   <artifactId>algorithm-java</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.0a</version>
 </dependency>
 ```
 

@@ -6,6 +6,10 @@ import com.github.myibu.algorithm.filter.BloomFilter;
 import com.github.myibu.algorithm.hash.MurmurHash2;
 import com.github.myibu.algorithm.hash.SHA256;
 import com.github.myibu.algorithm.hash.SipHash;
+import com.github.myibu.algorithm.random.LinearCongruentialRandom;
+import com.github.myibu.algorithm.random.MersenneTwisterRandom;
+import com.github.myibu.algorithm.random.Random;
+import com.github.myibu.algorithm.random.RandomArrays;
 import com.github.myibu.algorithm.validate.IDCardChecker;
 import org.junit.Assert;
 import org.junit.Test;
@@ -84,5 +88,25 @@ public class AlgorithmTest {
         Assert.assertTrue(filter.contains("jack"));
         Assert.assertTrue(filter.contains("ming"));
         Assert.assertFalse(filter.contains("abc"));
+    }
+
+    @Test
+    public void testRandomArrays() {
+        Boolean[] a = new Boolean[]{true, true, false, false, true};
+        RandomArrays.shuffle(a);
+        System.out.println();
+    }
+
+    @Test
+    public void testRandom() {
+        Random rd = new LinearCongruentialRandom();
+        for (int i = 0; i < 10; i++) {
+            System.out.println(String.format("Linear Congruential [%d]：%d", i, rd.nextInt(10)));
+        }
+
+        Random rd1 = new MersenneTwisterRandom();
+        for (int i = 0; i < 10; i++) {
+            System.out.println(String.format("Mersenne Twister [%d]：%d", i, rd1.nextInt(10)));
+        }
     }
 }
