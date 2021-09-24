@@ -23,20 +23,6 @@ package com.github.myibu.algorithm.filter.doublearray;
 import java.util.*;
 
 /**
- * <p>
- * 一个状态有如下几个功能
- * </p>
- * <p/>
- * <ul>
- * <li>success; 成功转移到另一个状态</li>
- * <li>failure; 不可顺着字符串跳转的话，则跳转到一个浅一点的节点</li>
- * <li>emits; 命中一个模式串</li>
- * </ul>
- * <p/>
- * <p>
- * 根节点稍有不同，根节点没有 failure 功能，它的“failure”指的是按照字符串路径转移到下一个状态。其他节点则都有failure状态。
- * </p>
- *
  * @author Robert Bor
  */
 public class State
@@ -77,7 +63,7 @@ public class State
     /**
      * 构造深度为depth的节点
      *
-     * @param depth
+     * @param depth depth
      */
     public State(int depth)
     {
@@ -87,7 +73,7 @@ public class State
     /**
      * 获取节点深度
      *
-     * @return
+     * @return depth
      */
     public int getDepth()
     {
@@ -97,7 +83,7 @@ public class State
     /**
      * 添加一个匹配到的模式串（这个状态对应着这个模式串)
      *
-     * @param keyword
+     * @param keyword keyword
      */
     public void addEmit(int keyword)
     {
@@ -111,7 +97,7 @@ public class State
     /**
      * 获取最大的值
      *
-     * @return
+     * @return Integer
      */
     public Integer getLargestValueId()
     {
@@ -123,7 +109,7 @@ public class State
     /**
      * 添加一些匹配到的模式串
      *
-     * @param emits
+     * @param emits emits
      */
     public void addEmit(Collection<Integer> emits)
     {
@@ -136,7 +122,7 @@ public class State
     /**
      * 获取这个节点代表的模式串（们）
      *
-     * @return
+     * @return Integer
      */
     public Collection<Integer> emit()
     {
@@ -146,7 +132,7 @@ public class State
     /**
      * 是否是终止状态
      *
-     * @return
+     * @return boolean
      */
     public boolean isAcceptable()
     {
@@ -156,7 +142,7 @@ public class State
     /**
      * 获取failure状态
      *
-     * @return
+     * @return State
      */
     public State failure()
     {
@@ -166,7 +152,8 @@ public class State
     /**
      * 设置failure状态
      *
-     * @param failState
+     * @param failState failState
+     * @param fail fail
      */
     public void setFailure(State failState, int fail[])
     {
@@ -194,8 +181,8 @@ public class State
     /**
      * 按照character转移，根节点转移失败会返回自己（永远不会返回null）
      *
-     * @param character
-     * @return
+     * @param character character
+     * @return State
      */
     public State nextState(Character character)
     {
@@ -205,8 +192,8 @@ public class State
     /**
      * 按照character转移，任何节点转移失败会返回null
      *
-     * @param character
-     * @return
+     * @param character character
+     * @return State
      */
     public State nextStateIgnoreRootState(Character character)
     {
@@ -251,7 +238,7 @@ public class State
     /**
      * 获取goto表
      *
-     * @return
+     * @return Map
      */
     public Map<Character, State> getSuccess()
     {

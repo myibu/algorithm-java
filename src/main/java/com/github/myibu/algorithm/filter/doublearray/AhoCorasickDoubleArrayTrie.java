@@ -436,9 +436,9 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
     /**
      * transition of a state
      *
-     * @param current
-     * @param c
-     * @return
+     * @param current current
+     * @param c c
+     * @return int
      */
     protected int transition(int current, char c)
     {
@@ -458,9 +458,9 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
     /**
      * transition of a state, if the state is root and it failed, then returns the root
      *
-     * @param nodePos
-     * @param c
-     * @return
+     * @param nodePos nodePos
+     * @param c c
+     * @return int
      */
     protected int transitionWithRoot(int nodePos, char c)
     {
