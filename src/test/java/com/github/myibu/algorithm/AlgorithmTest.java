@@ -2,7 +2,7 @@ package com.github.myibu.algorithm;
 
 import com.github.myibu.algorithm.data.Bits;
 import com.github.myibu.algorithm.data.Bytes;
-import com.github.myibu.algorithm.filter.BloomFilter;
+import com.github.myibu.algorithm.filter.*;
 import com.github.myibu.algorithm.hash.MurmurHash2;
 import com.github.myibu.algorithm.hash.SHA256;
 import com.github.myibu.algorithm.hash.SipHash;
@@ -15,6 +15,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
 
 public class AlgorithmTest {
     @Test
@@ -108,5 +109,23 @@ public class AlgorithmTest {
         for (int i = 0; i < 10; i++) {
             System.out.println(String.format("Mersenne Twister [%d]：%d", i, rd1.nextInt(10)));
         }
+    }
+
+    @Test
+    public void testDictionaryTree() {
+        DictionaryTree tree = new DictionaryTree();
+        tree.insertAll(new String[] {"hi", "hello", "nihao", "see", "hey"});
+        System.out.println(tree.search("hello, i am myibu, i see"));
+    }
+
+    @Test
+    public void testSensitiveWordFilter() {
+        SensitiveWordFilter filter = new DFASensitiveWordFilter();
+        filter.addWords(Set.of("黄色", "绿色", "红色"));
+        System.out.println(filter.searchWords("昨天我过马路的时候先遇到红色灯，再遇到绿灯"));
+
+        SensitiveWordFilter filter1 = new AhoCorasickSensitiveWordFilter();
+        filter1.addWords(Set.of("黄色", "绿色", "红色"));
+        System.out.println(filter1.searchWords("昨天我过马路的时候先遇到红色灯，再遇到绿灯"));
     }
 }

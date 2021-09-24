@@ -34,12 +34,16 @@ Reference to: [LinearCongruence.pdf](./docs/LinearCongruence.pdf)
 ### MersenneTwisterRandom
 Reference to: [MersenneTwister.pdf](./docs/MersenneTwister.pdf)
 
+### DFASensitiveWordFilter
+
+### AhoCorasickSensitiveWordFilter
+
 ## Installation
 ```bash
 <dependency>
   <groupId>com.github.myibu</groupId>
   <artifactId>algorithm-java</artifactId>
-  <version>1.0.0a</version>
+  <version>1.0.0b</version>
 </dependency>
 ```
 
