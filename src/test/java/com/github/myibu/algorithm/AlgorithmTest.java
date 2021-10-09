@@ -1,5 +1,6 @@
 package com.github.myibu.algorithm;
 
+import com.github.myibu.algorithm.compress.LZFCompressor;
 import com.github.myibu.algorithm.data.Bits;
 import com.github.myibu.algorithm.data.Bytes;
 import com.github.myibu.algorithm.filter.*;
@@ -15,6 +16,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Set;
 
 public class AlgorithmTest {
@@ -127,5 +129,29 @@ public class AlgorithmTest {
         SensitiveWordFilter filter1 = new AhoCorasickSensitiveWordFilter();
         filter1.addWords(Set.of("黄色", "绿色", "红色"));
         System.out.println(filter1.searchWords("昨天我过马路的时候先遇到红色灯，再遇到绿灯"));
+    }
+
+    @Test
+    public void testLZFCompressor() {
+        /**
+         * 1111122222
+         * hex:    01-31-31-20-00-00-32-20-00-00-32
+         * binary: 01-49-49-32-00-00-50-32-00-00-50
+         *
+         * 111112222233333
+         * hex:    01-31-31-20-00-00-32-40-00-00-33-20-00-01-33-33
+         * binary: 01-49-49-32-00-00-50-64-00-00-51-32-00-01-51-51
+         *
+         * 111112222233333344444
+         * '01-31-31-20-00-00-32-40-00-00-33-60-00-00-34-20-00-00-34'
+         */
+//        [1, 49, 49, 32, 0, 32, 0, 0, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+//        byte[] in_data = "1111122222".getBytes(StandardCharsets.UTF_8);
+
+        byte[] in_data = "111112222233333344444".getBytes(StandardCharsets.UTF_8);
+        byte[] out_data = new byte[in_data.length*2];
+        LZFCompressor com = new LZFCompressor();
+        com.compress(in_data, in_data.length, out_data, out_data.length);
+        System.out.println(Arrays.toString(out_data));
     }
 }
