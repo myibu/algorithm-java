@@ -2,7 +2,12 @@ package com.github.myibu.algorithm.compress;
 
 import java.nio.charset.StandardCharsets;
 
-public class LZFCompressor {
+/**
+ * LZF compress algorithm
+ * @author myibu
+ * Created on 2021/10/11
+ */
+public class LZFCompressor implements Compressor {
     private static final int LZF_HSLOT_BIAS = 0;
 
     private static final int HLOG = 16;
@@ -24,8 +29,9 @@ public class LZFCompressor {
         return ((((h ^ (h << 5)) >> (3*8 - HLOG)) - h*5) & (HSIZE - 1));
     }
 
-    public int compress(byte[] in_data, int in_len,
-                                byte[] out_data, int out_len) {
+    @Override
+    public int compress(byte[] in_data, int in_len, byte[] out_data) {
+        int out_len = out_data.length;
         if (in_len == 0 || out_len == 0)
             return 0;
         int ip = 0, op = 0;
@@ -123,6 +129,53 @@ public class LZFCompressor {
         out_data[op- lit - 1] = (byte)(lit - 1); /* end run */
         op -= (lit==0 ? 1: 0); /* undo run if length is zero */
 
+        return op;
+    }
+
+    @Override
+    public int decompress(byte[] in_data, int in_len, byte[] out_data) {
+        int out_len = out_data.length;
+        int ip = 0, op = 0;
+        while (ip < in_len) {
+            int ctrl;
+            ctrl = in_data[ip++];
+
+            if (ctrl < (1 << 5)) /* literal run */ {
+                ctrl++;
+
+                if (op + ctrl > out_len) {
+                    //SET_ERRNO (E2BIG);
+                    return 0;
+                }
+
+                do
+                    out_data[op++] = in_data[ip++];
+                while ((--ctrl) > 0);
+            }
+            else /* back reference */ {
+                int len = ctrl >> 5;
+                int ref = op - ((ctrl & 0x1f) << 8) - 1;
+                if (len == 7)
+                    len += in_data[ip++];
+
+                ref -= in_data[ip++];
+
+                if (op + len + 2 > out_len) {
+                    //SET_ERRNO (E2BIG);
+                    return 0;
+                }
+
+                if (ref < 0) {
+                    //SET_ERRNO (EINVAL);
+                    return 0;
+                }
+                out_data[op++] = out_data[ref++];
+                out_data[op++] = out_data[ref++];
+                do
+                    out_data[op++] = out_data[ref++];
+                while ((--len) > 0);
+            }
+        }
         return op;
     }
 }

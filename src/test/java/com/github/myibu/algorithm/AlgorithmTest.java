@@ -1,5 +1,7 @@
 package com.github.myibu.algorithm;
 
+import com.github.myibu.algorithm.compress.Compressor;
+import com.github.myibu.algorithm.compress.LZ77Compressor;
 import com.github.myibu.algorithm.compress.LZFCompressor;
 import com.github.myibu.algorithm.data.Bits;
 import com.github.myibu.algorithm.data.Bytes;
@@ -143,15 +145,31 @@ public class AlgorithmTest {
          * binary: 01-49-49-32-00-00-50-64-00-00-51-32-00-01-51-51
          *
          * 111112222233333344444
-         * '01-31-31-20-00-00-32-40-00-00-33-60-00-00-34-20-00-00-34'
+         * hex:    01-31-31-20-00-00-32-40-00-00-33-60-00-00-34-20-00-00-34
+         * binary: 01-49-49-32-00-00-50-64-00-00-51-96-00-00-52-32-00-00-52
+         *
+         * this is a test
+         * hex:    04-74-68-69-73-20-20-02-05-61-20-74-65-73-74
+         * binary: 04-116-104-105-115-32-32-02-05-97-32-116-101-115-116
          */
-//        [1, 49, 49, 32, 0, 32, 0, 0, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+//       [4, 116, 104, 105, 115, 32, 32, 2, 5, 97, 32, 116, 101, 115, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 //        byte[] in_data = "1111122222".getBytes(StandardCharsets.UTF_8);
-
-        byte[] in_data = "111112222233333344444".getBytes(StandardCharsets.UTF_8);
+//        byte[] in_data = "111112222233333344444".getBytes(StandardCharsets.UTF_8);
+//        byte[] in_data = "this is a test".getBytes(StandardCharsets.UTF_8);
+        byte[] in_data = "Type \"help\", \"copyright\", \"credits\" or \"license\" for more information.".getBytes(StandardCharsets.UTF_8);
         byte[] out_data = new byte[in_data.length*2];
         LZFCompressor com = new LZFCompressor();
-        com.compress(in_data, in_data.length, out_data, out_data.length);
+        int op = com.compress(in_data, in_data.length, out_data);
+        byte[] decompress_data = new byte[out_data.length * 2];
+        op = com.decompress(out_data, op, decompress_data);
         System.out.println(Arrays.toString(out_data));
+    }
+
+    @Test
+    public void testLZ77Compressor() {
+        byte[] in_data = "abracadabrad".getBytes(StandardCharsets.UTF_8);
+        byte[] out_data = new byte[in_data.length*2];
+        Compressor compressor = new LZ77Compressor();
+        compressor.compress(in_data, in_data.length, out_data);
     }
 }
