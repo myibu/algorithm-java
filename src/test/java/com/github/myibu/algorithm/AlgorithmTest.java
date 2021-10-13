@@ -5,6 +5,8 @@ import com.github.myibu.algorithm.compress.LZ77Compressor;
 import com.github.myibu.algorithm.compress.LZFCompressor;
 import com.github.myibu.algorithm.data.Bits;
 import com.github.myibu.algorithm.data.Bytes;
+import com.github.myibu.algorithm.endode.Encoder;
+import com.github.myibu.algorithm.endode.GolombEncoder;
 import com.github.myibu.algorithm.filter.*;
 import com.github.myibu.algorithm.hash.MurmurHash2;
 import com.github.myibu.algorithm.hash.SHA256;
@@ -171,5 +173,16 @@ public class AlgorithmTest {
         byte[] out_data = new byte[in_data.length*2];
         Compressor compressor = new LZ77Compressor();
         compressor.compress(in_data, in_data.length, out_data);
+    }
+
+    @Test
+    public void testGolombEncoder() {
+        int m = 5;
+        GolombEncoder encoder = new GolombEncoder();
+        System.out.println(5 + "= "  + encoder.encode(5, m));
+        System.out.println(6 + "= "  + encoder.encode(6, m));
+        System.out.println(7 + "= "  + encoder.encode(7, m));
+        System.out.println(8 + "= "  + encoder.encode(8, m));
+        System.out.println(9 + "= "  + encoder.encode(9, m));
     }
 }

@@ -14,7 +14,7 @@ public class Bits {
     private int size;
     private int used;
 
-    Bits() {
+    public Bits() {
         table = new Bit[INITIAL_SIZE];
         this.used = 0;
         this.size = INITIAL_SIZE;
@@ -373,6 +373,10 @@ public class Bits {
         return bits;
     }
 
+    public static Bits ofZero() {
+        return ofZero(1);
+    }
+
     public static Bits ofOne(int len) {
         Bits bits = new Bits();
         bits.expand(len);
@@ -383,11 +387,23 @@ public class Bits {
         return bits;
     }
 
+    public static Bits ofOne() {
+        return ofOne(1);
+    }
+
     public Bits append(Bits other) {
         int newLen = this.used + other.used;
         expand(newLen);
         System.arraycopy(other.table, 0, table, this.used, other.used);
         this.used += other.used;
+        return this;
+    }
+
+    public Bits append(Bit bit) {
+        int newLen = this.used + 1;
+        expand(newLen);
+        table[this.used] = bit;
+        this.used += 1;
         return this;
     }
 
@@ -424,6 +440,10 @@ public class Bits {
         if (fromIndex > toIndex)
             throw new IllegalArgumentException("fromIndex(" + fromIndex +
                     ") > toIndex(" + toIndex + ")");
+    }
+
+    public Bit[] table(){
+        return this.table;
     }
 
     @Override
