@@ -35,7 +35,7 @@ public class GolombEncoder implements Encoder {
         }
     }
 
-    private Bits encodeToTruncatedBinary(int x, int n) {
+    public static Bits encodeToTruncatedBinary(int x, int n) {
         // Set k = floor(log2(n)), i.e., k such that 2^k <= n < 2^(k+1).
         int k = 0, t = n;
         while (t > 1) { k++;  t >>= 1; }
@@ -47,7 +47,7 @@ public class GolombEncoder implements Encoder {
         else  return encodeToBinary(x+u, k+1);
     }
 
-    private Bits encodeToBinary(int x, int len) {
+    public static Bits encodeToBinary(int x, int len) {
         Bits s = new Bits();
         while (x != 0) {
             if ((x & 0x01) == 0)  s = Bits.ofZero().append(s);
@@ -91,7 +91,7 @@ public class GolombEncoder implements Encoder {
         return q * m + r;
     }
 
-    public int decodeTruncatedBinary(Bits bits, int m) {
+    public static int decodeTruncatedBinary(Bits bits, int m) {
         // Set k = floor(log2(n)), i.e., k such that 2^k <= n < 2^(k+1).
         int k = 0, t = m;
         while (t > 1) { k++;  t >>= 1; }
@@ -101,7 +101,7 @@ public class GolombEncoder implements Encoder {
         return (x < u) ? x : (x - u);
     }
 
-    private int encodeToBinary(Bits bits) {
+    public static int encodeToBinary(Bits bits) {
         int x = 0;
         for (int i = 0; i < bits.length(); i++) {
             x += (bits.get(i).value() << (bits.length() - i - 1));

@@ -1,6 +1,11 @@
 package com.github.myibu.algorithm.compress;
 
+import com.github.myibu.algorithm.data.Bits;
+import com.github.myibu.algorithm.endode.GolombEncoder;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * LZ77 compress algorithm
@@ -48,6 +53,7 @@ public class LZ77Compressor implements Compressor {
             System.arraycopy(in_data, 0, out_data, 0, in_len);
             return in_len;
         }
+        List<List<Integer>> tuples = new ArrayList<>();
         // search buffer
         byte[] sBuf = new byte[s];
         // look ahead window
@@ -87,6 +93,7 @@ public class LZ77Compressor implements Compressor {
 //                byte[] tuple = String.format("(%d,%d,%s)", minIndex + 1, minMatched, new String(new byte[]{lWindow[minMatched]})).getBytes();
 //                System.arraycopy(tuple, 0, out_data, (op++) * tuple.length, tuple.length);
                 System.out.println(String.format("(%d, %d, %s)", minIndex + 1, minMatched, new String(new byte[]{lWindow[minMatched]})));
+                tuples.add(Arrays.asList( minIndex + 1, minMatched, (int)lWindow[minMatched]));
                 sp += (minMatched + 1);
 //                if (sp > s) {
 //                    sp = s-1;
@@ -101,8 +108,23 @@ public class LZ77Compressor implements Compressor {
 //                byte[] tuple = String.format("(%d,%d,%s)", 0, 0, new String(new byte[]{lWindow[0]})).getBytes();
 //                System.arraycopy(tuple, 0, out_data, (op++) * tuple.length, tuple.length);
                 System.out.println(String.format("(%d, %d, %s)", 0, 0, new String(new byte[]{lWindow[0]})));
+                tuples.add(Arrays.asList(0, 0, (int)lWindow[0]));
             }
         }
+        System.out.println(tuples);
+        int sum = 0;
+        GolombEncoder encoder = new GolombEncoder();
+        for (List<Integer> tuple: tuples) {
+            Bits bits = new Bits();
+            bits.append(encoder.encodeToBinary(tuple.get(0), (int)(Math.ceil(Math.log(s) / Math.log(2)))));
+            System.out.println("1" + bits);
+            bits.append(encoder.encode(tuple.get(1), 5));
+            System.out.println("2" + bits);
+            bits.append(Bits.ofByte((byte)tuple.get(2).intValue()));
+            System.out.println("3" + bits);
+            sum += bits.length();
+        }
+        System.out.println("compressed length: " + sum);
         return 0;
     }
 

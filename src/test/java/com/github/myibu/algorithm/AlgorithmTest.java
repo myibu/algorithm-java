@@ -181,6 +181,9 @@ public class AlgorithmTest {
     public void testGolombEncoder() {
         int m = 4;
         GolombEncoder encoder = new GolombEncoder();
+        System.out.println(encoder.encode(0, 5));
+        System.out.println(encoder.encode(1, 5));
+        System.out.println(encoder.encode(4, 5));
         List<Bits> encodeList = new ArrayList<>();
         for (int i = 1; i <= 9; i++) {
             encodeList.add(encoder.encode(i, m));
