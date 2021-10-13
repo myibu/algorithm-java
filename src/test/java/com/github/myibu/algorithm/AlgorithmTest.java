@@ -20,7 +20,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 public class AlgorithmTest {
@@ -177,12 +179,16 @@ public class AlgorithmTest {
 
     @Test
     public void testGolombEncoder() {
-        int m = 5;
+        int m = 4;
         GolombEncoder encoder = new GolombEncoder();
-        System.out.println(5 + "= "  + encoder.encode(5, m));
-        System.out.println(6 + "= "  + encoder.encode(6, m));
-        System.out.println(7 + "= "  + encoder.encode(7, m));
-        System.out.println(8 + "= "  + encoder.encode(8, m));
-        System.out.println(9 + "= "  + encoder.encode(9, m));
+        List<Bits> encodeList = new ArrayList<>();
+        for (int i = 1; i <= 9; i++) {
+            encodeList.add(encoder.encode(i, m));
+        }
+        for (int i = 0; i < encodeList.size(); i++) {
+            Bits bits = encodeList.get(i);
+            System.out.println("encode " + (i+1) + " => " + bits);
+            System.out.println("decode " + bits + " => " + encoder.decode(bits, m));
+        }
     }
 }

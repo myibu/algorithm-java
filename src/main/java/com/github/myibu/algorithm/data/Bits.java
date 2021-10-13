@@ -1,10 +1,14 @@
 package com.github.myibu.algorithm.data;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /**
  * Bits entity
  * @author myibu
  * Created on 2021/9/14
  */
-public class Bits {
+public class Bits implements Iterable<Bit> {
     public static final int BYTE_SIZE = 8;
     public static final int SHORT_SIZE = 16;
     public static final int INT_SIZE = 32;
@@ -456,5 +460,39 @@ public class Bits {
         builder.append(", size=").append(size)
                 .append(", used=").append(used).append("}");
         return builder.toString();
+    }
+
+    @Override
+    public Iterator<Bit> iterator() {
+        return new Itr();
+    }
+
+    private class Itr implements Iterator<Bit> {
+        int cursor = 0;
+        int lastRet = -1;
+
+        @Override
+        public boolean hasNext() {
+            return cursor != length();
+        }
+
+        @Override
+        public Bit next() {
+            try {
+                int i = cursor;
+                Bit next = get(i);
+                lastRet = i;
+                cursor = i + 1;
+                return next;
+            } catch (IndexOutOfBoundsException e) {
+                throw new NoSuchElementException();
+            }
+        }
+    }
+
+    public Bit get(int index) {
+        if (index < 0 || index >= used)
+            throw new IndexOutOfBoundsException();
+        return table[index];
     }
 }

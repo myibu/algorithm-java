@@ -1,5 +1,6 @@
 package com.github.myibu.algorithm.endode;
 
+import com.github.myibu.algorithm.data.Bit;
 import com.github.myibu.algorithm.data.Bits;
 
 /**
@@ -10,7 +11,7 @@ import com.github.myibu.algorithm.data.Bits;
  */
 public class GolombEncoder implements Encoder {
     /**
-     *
+     * encode n to binary bits based on argument m
      * @param n the value to encode
      * @param m m, like 5
      * @return the length of encoded bits
@@ -23,7 +24,7 @@ public class GolombEncoder implements Encoder {
         int r = n % m;
         int k = (int)(Math.ceil(Math.log(m) / Math.log(2)));
         if ((m & 0x01) == 0) {
-            return bits.append(encodeToStandardBinary(r, k));
+            return bits.append(encodeToBinary(r, k));
         } else {
             // truncated binary encoding
             if (r < Math.pow(2, k) - m) {
@@ -32,10 +33,6 @@ public class GolombEncoder implements Encoder {
                 return bits.append(encodeToTruncatedBinary(r, m));
             }
         }
-    }
-
-    private Bits encodeToStandardBinary(int x, int len) {
-        return encodeToBinary(x, len);
     }
 
     private Bits encodeToTruncatedBinary(int x, int n) {
@@ -59,5 +56,56 @@ public class GolombEncoder implements Encoder {
         }
         while (s.length() < len)  s = Bits.ofZero().append(s);
         return s;
+    }
+
+    /**
+     * decode binary bits to n
+     * @param bits encoded binary bits
+     * @param m m, like 5
+     * @return decoded value
+     */
+    public int decode(Bits bits, int m) {
+        // To decode, read the first k bits.
+        // If they encode a value less than u, decoding is complete.
+        // Otherwise, read an additional bit and subtract u from the result.
+        boolean isRStart = false;
+        Bits qb = new Bits(), rb = new Bits();
+        for (Bit bit: bits) {
+            if (!isRStart && bit == Bit.ZERO) {
+                isRStart = true;
+                continue;
+            }
+            if (!isRStart) {
+                qb.append(bit);
+            } else {
+                rb.append(bit);
+            }
+        }
+        int q = qb.length();
+        int r = 0;
+        if ((m & 0x01) == 0) {
+            r = encodeToBinary(rb);
+        } else {
+            r = decodeTruncatedBinary(rb, m);
+        }
+        return q * m + r;
+    }
+
+    public int decodeTruncatedBinary(Bits bits, int m) {
+        // Set k = floor(log2(n)), i.e., k such that 2^k <= n < 2^(k+1).
+        int k = 0, t = m;
+        while (t > 1) { k++;  t >>= 1; }
+        // Set u to the number of unused codewords = 2^(k+1) - n.
+        int u = (1 << k+1) - m;
+        int x = encodeToBinary(bits);
+        return (x < u) ? x : (x - u);
+    }
+
+    private int encodeToBinary(Bits bits) {
+        int x = 0;
+        for (int i = 0; i < bits.length(); i++) {
+            x += (bits.get(i).value() << (bits.length() - i - 1));
+        }
+        return x;
     }
 }
