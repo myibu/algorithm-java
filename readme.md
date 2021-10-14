@@ -38,6 +38,12 @@ Reference to: [MersenneTwister.pdf](./docs/MersenneTwister.pdf)
 
 ### AhoCorasickSensitiveWordFilter
 
+### LZ77Compressor
+Reference to: [MersenneTwister.pdf](./docs/LZ77.pdf)
+
+### GolombEncoder
+Reference to: [MersenneTwister.pdf](./docs/HoffmanAndGolombCoding.pdf)
+
 ## Installation
 ```bash
 <dependency>

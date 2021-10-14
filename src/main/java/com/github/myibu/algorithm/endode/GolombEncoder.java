@@ -5,7 +5,7 @@ import com.github.myibu.algorithm.data.Bits;
 
 /**
  * Golomb code
- * see <a herf="https://en.wikipedia.org/wiki/Golomb_coding#Simple_algorithm">https://en.wikipedia.org/wiki/Golomb_coding#Simple_algorithm</a>
+ * see <a href="https://en.wikipedia.org/wiki/Golomb_coding#Simple_algorithm">https://en.wikipedia.org/wiki/Golomb_coding#Simple_algorithm</a>
  * @author myibu
  * Created on 2021/10/12
  */

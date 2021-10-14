@@ -1,5 +1,6 @@
 package com.github.myibu.algorithm.data;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -8,7 +9,7 @@ import java.util.NoSuchElementException;
  * @author myibu
  * Created on 2021/9/14
  */
-public class Bits implements Iterable<Bit> {
+public class Bits implements Iterable<Bit>, Cloneable {
     public static final int BYTE_SIZE = 8;
     public static final int SHORT_SIZE = 16;
     public static final int INT_SIZE = 32;
@@ -139,10 +140,18 @@ public class Bits implements Iterable<Bit> {
     }
 
     public byte[] toByteArray() {
-        int len = byteLength();
+        Bits bits;
+        if (this.used % BYTE_SIZE != 0) {
+            Bits completed = this.clone();
+            completed.append(Bits.ofZero(BYTE_SIZE - this.used % BYTE_SIZE));
+            bits = completed;
+        } else {
+            bits = this;
+        }
+        int len = bits.byteLength();
         byte[] data = new byte[len];
         for (int i = 0; i < len; i++) {
-            data[i] = getByte(i).toByte();
+            data[i] = bits.getByte(i).toByte();
         }
         return data;
     }
@@ -207,6 +216,23 @@ public class Bits implements Iterable<Bit> {
         return res;
     }
 
+    public static Bits ofString(String txt) {
+        if (txt == null || txt.length() == 0) {
+            return new Bits();
+        }
+        Bits bits = new Bits();
+        for (int i = 0; i < txt.length(); i++) {
+            char ch = txt.charAt(i);
+            if (ch == '0') {
+                bits.append(Bit.ZERO);
+            } else if (ch == '1') {
+                bits.append(Bit.ONE);
+            } else {
+                throw new IllegalArgumentException("illegal character " + (ch-'0') + " in index " + i);
+            }
+        }
+        return bits;
+    }
     public static Bits ofByte(byte val) {
         return ofByte(val, BYTE_SIZE);
     }
@@ -453,12 +479,9 @@ public class Bits implements Iterable<Bit> {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Bits{table=");
         for (int i = 0; i < used; i++) {
             builder.append(table[i].value());
         }
-        builder.append(", size=").append(size)
-                .append(", used=").append(used).append("}");
         return builder.toString();
     }
 
@@ -494,5 +517,31 @@ public class Bits implements Iterable<Bit> {
         if (index < 0 || index >= used)
             throw new IndexOutOfBoundsException();
         return table[index];
+    }
+
+    @Override
+    public Bits clone() {
+        Bits dest = null;
+        try{
+            dest = (Bits) super.clone();
+            dest.table = new Bit[used];
+            System.arraycopy(table, 0, dest.table, 0, used);
+        } catch (CloneNotSupportedException e){
+            e.printStackTrace();
+        }
+        return dest;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Bits bits = (Bits) o;
+        return Arrays.equals(table, bits.table);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(table);
     }
 }

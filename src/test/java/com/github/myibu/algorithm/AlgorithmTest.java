@@ -5,7 +5,6 @@ import com.github.myibu.algorithm.compress.LZ77Compressor;
 import com.github.myibu.algorithm.compress.LZFCompressor;
 import com.github.myibu.algorithm.data.Bits;
 import com.github.myibu.algorithm.data.Bytes;
-import com.github.myibu.algorithm.endode.Encoder;
 import com.github.myibu.algorithm.endode.GolombEncoder;
 import com.github.myibu.algorithm.filter.*;
 import com.github.myibu.algorithm.hash.MurmurHash2;
@@ -20,10 +19,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class AlgorithmTest {
     @Test
@@ -171,10 +168,17 @@ public class AlgorithmTest {
 
     @Test
     public void testLZ77Compressor() {
-        byte[] in_data = "abracadabrad".getBytes(StandardCharsets.UTF_8);
+        // todo
+        byte[] in_data = "com.github.myibu.algorithm.AlgorithmTest.testLZ77Compressor".getBytes(StandardCharsets.UTF_8);
         byte[] out_data = new byte[in_data.length*2];
         Compressor compressor = new LZ77Compressor();
-        compressor.compress(in_data, in_data.length, out_data);
+        int compressed = compressor.compress(in_data, in_data.length, out_data);
+        byte[] compressed_data = Arrays.copyOf(out_data, compressed);
+//        System.out.println(new String(compressed_data));
+        byte[] decompressed_data = new byte[compressed * 2];
+        int decompressed = compressor.decompress(compressed_data, compressed, decompressed_data);
+        Assert.assertEquals("com.github.myibu.algorithm.AlgorithmTest.testLZ77Compressor",
+                new String(Arrays.copyOf(decompressed_data, decompressed), StandardCharsets.UTF_8));
     }
 
     @Test
