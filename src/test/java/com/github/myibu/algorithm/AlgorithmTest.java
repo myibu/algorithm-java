@@ -168,16 +168,16 @@ public class AlgorithmTest {
 
     @Test
     public void testLZ77Compressor() {
-        // todo
-        byte[] in_data = "com.github.myibu.algorithm.AlgorithmTest.testLZ77Compressor".getBytes(StandardCharsets.UTF_8);
+        String txt = "在法律或合同明确规定的情况下，如当事人一方不履行或不适当履行合同义务时，另一方有权解除合同。故合同可由当事人一方行使解除权而消灭。《中华人民共和国经济合同法》规定，如由于合同所依据的国家计划被修改或取消，由于行政命令企业必须关闭、停产或转产，由于不可抗力以及由于一方违约致使合同不能履行或履行已无必要时，允许当事人一方及时通知他方变更或解除合同。";
+        byte[] in_data = txt.getBytes(StandardCharsets.UTF_8);
         byte[] out_data = new byte[in_data.length*2];
         Compressor compressor = new LZ77Compressor();
+        compressor.setDebug(true);
         int compressed = compressor.compress(in_data, in_data.length, out_data);
         byte[] compressed_data = Arrays.copyOf(out_data, compressed);
-//        System.out.println(new String(compressed_data));
         byte[] decompressed_data = new byte[compressed * 2];
         int decompressed = compressor.decompress(compressed_data, compressed, decompressed_data);
-        Assert.assertEquals("com.github.myibu.algorithm.AlgorithmTest.testLZ77Compressor",
+        Assert.assertEquals(txt,
                 new String(Arrays.copyOf(decompressed_data, decompressed), StandardCharsets.UTF_8));
     }
 

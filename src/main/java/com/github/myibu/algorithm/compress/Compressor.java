@@ -5,7 +5,7 @@ package com.github.myibu.algorithm.compress;
  * @author myibu
  * Created on 2021/10/11
  */
-public interface Compressor {
+public interface Compressor extends Debugable {
     /**
      * compress bytes
      * @param in_data input

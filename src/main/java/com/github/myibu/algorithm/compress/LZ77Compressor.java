@@ -69,9 +69,6 @@ public class LZ77Compressor implements Compressor {
             for (int i = lStart; i < lEnd; i++) {
                 lWindow[i] = in_data[ip + i];
             }
-            //System.out.println("txt=" + new String() + new String(in_data) + ", sBuf="
-            //        +  new StringBuilder(new String(sBuf)).reverse().toString() + ", lWindow=" + new String(lWindow));
-
             int llStart = sEnd - 1, rrStart = 0, llEnd = 0, rrEnd = (lp = lEnd);
             int minMatched = 1, minIndex = 0;
             while (llStart >= 0) {
@@ -95,9 +92,17 @@ public class LZ77Compressor implements Compressor {
                 ip++;
                 tuples.add(Arrays.asList(0, 0, (int)lWindow[0]));
             }
+            if (isDebug) {
+                System.out.println("Txt=" + new String() + new String(in_data) + ", SearchBuffer="
+                        +  new StringBuilder(new String(sBuf)).reverse().toString() + ", LookaheadWindow=" + new String(lWindow)
+                        + " | " + tuples.get(tuples.size()-1)/* + " | " + (char)(tuples.get(tuples.size()-1).get(2).intValue())*/);
+            }
         }
-        // System.out.println(tuples);
-        return doEncode(tuples, out_data);
+        int compressedLen = doEncode(tuples, out_data);
+        if (isDebug) {
+            System.out.println("after encode: compressed rate=" + (compressedLen * 1.0 / in_len));
+        }
+        return compressedLen;
     }
 
     private int doEncode(List<List<Integer>> tuples, byte[] out_data) {
@@ -111,12 +116,16 @@ public class LZ77Compressor implements Compressor {
             bits.append(bits2);
             Bits bits3 = Bits.ofByte((byte)tuple.get(2).intValue());
             bits.append(bits3);
-            // System.out.println("("+ bits1 + ", "+ bits2 + ", "+ bits3 + ")");
+            if (isDebug) {
+                System.out.println(tuple + " encoded result: " + "("+ bits1 + ", "+ bits2 + ", "+ bits3 + ")");
+            }
             finalRes.append(bits);
         }
         byte[] fr = finalRes.toByteArray();
         System.arraycopy(fr, 0, out_data, 0, fr.length);
-        // System.out.println("bits: " + finalRes);
+        if (isDebug) {
+            System.out.println("after encode: bits=" + finalRes);
+        }
         return fr.length;
     }
 
@@ -145,9 +154,12 @@ public class LZ77Compressor implements Compressor {
         }
         List<Bits> sortedEncodeSeq = allEncodeSeq.stream().sorted(Comparator.comparingInt(Bits::length)).collect(Collectors.toList());
         Bits bits = Bits.ofByte(in_data);
+        if (isDebug) {
+            System.out.println("before decode: bits=" + bits);
+        }
         int ip = 0;
         List<List<Integer>> tuples = new ArrayList<>();
-        while (ip < bits.length()) {
+        while (ip < bits.length() && ip + e1 <= bits.length()) {
             Bits b1 = bits.subBits(ip, ip + e1);
             ip = ip + e1;
             int offset = encoder.encodeToBinary(b1);
@@ -168,7 +180,9 @@ public class LZ77Compressor implements Compressor {
             tuples.add(Arrays.asList(offset, length, symbol));
             ip += 8;
         }
-        // System.out.println(tuples);
+        if (isDebug) {
+            System.out.println("decode tuples=" + tuples);
+        }
         return doDecode(tuples, out_data);
     }
 
@@ -181,7 +195,9 @@ public class LZ77Compressor implements Compressor {
                 seq.append(sb);
             } else {
                 int start = seq.byteLength() < s ? seq.byteLength() - offset: s - offset;
-                seq.append(seq.subBits(start * 8, (start + length) * 8)).append(sb);
+                int used = seq.byteLength() < s ? 0 : seq.byteLength() - s;
+                // System.out.println("start=" + start + ", used=" + used + ", length=" +  length);
+                seq.append(seq.subBits((used + start) * 8, (used + start + length) * 8)).append(sb);
             }
         }
         int len = seq.byteLength();
@@ -189,5 +205,13 @@ public class LZ77Compressor implements Compressor {
             out_data[i] = seq.getByte(i).toByte();
         }
         return len;
+    }
+
+
+    private boolean isDebug = false;
+
+    @Override
+    public void setDebug(boolean isDebug) {
+        this.isDebug = isDebug;
     }
 }

@@ -178,4 +178,11 @@ public class LZFCompressor implements Compressor {
         }
         return op;
     }
+
+    private boolean isDebug;
+
+    @Override
+    public void setDebug(boolean isDebug) {
+        this.isDebug = isDebug;
+    }
 }

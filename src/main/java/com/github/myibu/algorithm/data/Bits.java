@@ -245,7 +245,7 @@ public class Bits implements Iterable<Bit>, Cloneable {
             bits.table[j] = (((val>>i) & 0x01) ==1) ? Bit.ONE : Bit.ZERO;
         }
         for (; j >= 0; j--) {
-            bits.table[j] = val > 0 ? Bit.ZERO : Bit.ONE;
+            bits.table[j] = val >= 0 ? Bit.ZERO : Bit.ONE;
         }
         bits.used += len;
         return bits;
@@ -272,7 +272,7 @@ public class Bits implements Iterable<Bit>, Cloneable {
             bits.table[j] = (((val>>i) & 0x01) ==1) ? Bit.ONE : Bit.ZERO;
         }
         for (; j >= 0; j--) {
-            bits.table[j] = val > 0 ? Bit.ZERO : Bit.ONE;
+            bits.table[j] = val >= 0 ? Bit.ZERO : Bit.ONE;
         }
         bits.used += len;
         return bits;
@@ -299,7 +299,7 @@ public class Bits implements Iterable<Bit>, Cloneable {
             bits.table[j] = (((val>>i) & 0x01) ==1) ? Bit.ONE : Bit.ZERO;
         }
         for (; j >= 0; j--) {
-            bits.table[j] = val > 0 ? Bit.ZERO : Bit.ONE;
+            bits.table[j] = val >= 0 ? Bit.ZERO : Bit.ONE;
         }
         bits.used += len;
         return bits;
@@ -378,7 +378,7 @@ public class Bits implements Iterable<Bit>, Cloneable {
             bits.table[j] = (((val>>i) & 0x01) ==1) ? Bit.ONE : Bit.ZERO;
         }
         for (; j >= 0; j--) {
-            bits.table[j] = val > 0 ? Bit.ZERO : Bit.ONE;
+            bits.table[j] = val >= 0 ? Bit.ZERO : Bit.ONE;
         }
         bits.used += len;
         return bits;
