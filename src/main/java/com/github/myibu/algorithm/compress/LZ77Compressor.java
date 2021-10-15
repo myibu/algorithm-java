@@ -66,6 +66,9 @@ public class LZ77Compressor implements Compressor {
             }
             // update look ahead window
             int lStart = 0, lEnd = ip + l < in_len ? l : in_len - ip;
+            if (lEnd < l) {
+                lWindow = new byte[lEnd];
+            }
             for (int i = lStart; i < lEnd; i++) {
                 lWindow[i] = in_data[ip + i];
             }
@@ -82,8 +85,13 @@ public class LZ77Compressor implements Compressor {
                 }
                 llStart--;
             }
+            // only one byte in window, set tuple to (0, 0, lWindow[0])
+            if (lWindow.length == 1) {
+                minIndex = 0;
+            }
             // matched
             if (minIndex > 0) {
+                // 匹配到5个怎么编码
                 tuples.add(Arrays.asList( minIndex + 1, minMatched, (int)lWindow[minMatched]));
                 sp += (minMatched + 1);
                 ip += (minMatched + 1);
@@ -196,8 +204,8 @@ public class LZ77Compressor implements Compressor {
             } else {
                 int start = seq.byteLength() < s ? seq.byteLength() - offset: s - offset;
                 int used = seq.byteLength() < s ? 0 : seq.byteLength() - s;
-                // System.out.println("start=" + start + ", used=" + used + ", length=" +  length);
                 seq.append(seq.subBits((used + start) * 8, (used + start + length) * 8)).append(sb);
+//                System.out.println("start=" + start + ", used=" + used + ", length=" +  length + ", seq=" + seq);
             }
         }
         int len = seq.byteLength();
