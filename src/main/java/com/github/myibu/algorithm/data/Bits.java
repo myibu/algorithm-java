@@ -1,10 +1,15 @@
 package com.github.myibu.algorithm.data;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /**
  * Bits entity
  * @author myibu
  * Created on 2021/9/14
  */
-public class Bits {
+public class Bits implements Iterable<Bit>, Cloneable {
     public static final int BYTE_SIZE = 8;
     public static final int SHORT_SIZE = 16;
     public static final int INT_SIZE = 32;
@@ -14,7 +19,7 @@ public class Bits {
     private int size;
     private int used;
 
-    Bits() {
+    public Bits() {
         table = new Bit[INITIAL_SIZE];
         this.used = 0;
         this.size = INITIAL_SIZE;
@@ -135,10 +140,18 @@ public class Bits {
     }
 
     public byte[] toByteArray() {
-        int len = byteLength();
+        Bits bits;
+        if (this.used % BYTE_SIZE != 0) {
+            Bits completed = this.clone();
+            completed.append(Bits.ofZero(BYTE_SIZE - this.used % BYTE_SIZE));
+            bits = completed;
+        } else {
+            bits = this;
+        }
+        int len = bits.byteLength();
         byte[] data = new byte[len];
         for (int i = 0; i < len; i++) {
-            data[i] = getByte(i).toByte();
+            data[i] = bits.getByte(i).toByte();
         }
         return data;
     }
@@ -203,6 +216,23 @@ public class Bits {
         return res;
     }
 
+    public static Bits ofString(String txt) {
+        if (txt == null || txt.length() == 0) {
+            return new Bits();
+        }
+        Bits bits = new Bits();
+        for (int i = 0; i < txt.length(); i++) {
+            char ch = txt.charAt(i);
+            if (ch == '0') {
+                bits.append(Bit.ZERO);
+            } else if (ch == '1') {
+                bits.append(Bit.ONE);
+            } else {
+                throw new IllegalArgumentException("illegal character " + (ch-'0') + " in index " + i);
+            }
+        }
+        return bits;
+    }
     public static Bits ofByte(byte val) {
         return ofByte(val, BYTE_SIZE);
     }
@@ -215,7 +245,7 @@ public class Bits {
             bits.table[j] = (((val>>i) & 0x01) ==1) ? Bit.ONE : Bit.ZERO;
         }
         for (; j >= 0; j--) {
-            bits.table[j] = val > 0 ? Bit.ZERO : Bit.ONE;
+            bits.table[j] = val >= 0 ? Bit.ZERO : Bit.ONE;
         }
         bits.used += len;
         return bits;
@@ -242,7 +272,7 @@ public class Bits {
             bits.table[j] = (((val>>i) & 0x01) ==1) ? Bit.ONE : Bit.ZERO;
         }
         for (; j >= 0; j--) {
-            bits.table[j] = val > 0 ? Bit.ZERO : Bit.ONE;
+            bits.table[j] = val >= 0 ? Bit.ZERO : Bit.ONE;
         }
         bits.used += len;
         return bits;
@@ -269,7 +299,7 @@ public class Bits {
             bits.table[j] = (((val>>i) & 0x01) ==1) ? Bit.ONE : Bit.ZERO;
         }
         for (; j >= 0; j--) {
-            bits.table[j] = val > 0 ? Bit.ZERO : Bit.ONE;
+            bits.table[j] = val >= 0 ? Bit.ZERO : Bit.ONE;
         }
         bits.used += len;
         return bits;
@@ -348,7 +378,7 @@ public class Bits {
             bits.table[j] = (((val>>i) & 0x01) ==1) ? Bit.ONE : Bit.ZERO;
         }
         for (; j >= 0; j--) {
-            bits.table[j] = val > 0 ? Bit.ZERO : Bit.ONE;
+            bits.table[j] = val >= 0 ? Bit.ZERO : Bit.ONE;
         }
         bits.used += len;
         return bits;
@@ -373,6 +403,10 @@ public class Bits {
         return bits;
     }
 
+    public static Bits ofZero() {
+        return ofZero(1);
+    }
+
     public static Bits ofOne(int len) {
         Bits bits = new Bits();
         bits.expand(len);
@@ -383,11 +417,23 @@ public class Bits {
         return bits;
     }
 
+    public static Bits ofOne() {
+        return ofOne(1);
+    }
+
     public Bits append(Bits other) {
         int newLen = this.used + other.used;
         expand(newLen);
         System.arraycopy(other.table, 0, table, this.used, other.used);
         this.used += other.used;
+        return this;
+    }
+
+    public Bits append(Bit bit) {
+        int newLen = this.used + 1;
+        expand(newLen);
+        table[this.used] = bit;
+        this.used += 1;
         return this;
     }
 
@@ -426,15 +472,76 @@ public class Bits {
                     ") > toIndex(" + toIndex + ")");
     }
 
+    public Bit[] table(){
+        return this.table;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Bits{table=");
         for (int i = 0; i < used; i++) {
             builder.append(table[i].value());
         }
-        builder.append(", size=").append(size)
-                .append(", used=").append(used).append("}");
         return builder.toString();
+    }
+
+    @Override
+    public Iterator<Bit> iterator() {
+        return new Itr();
+    }
+
+    private class Itr implements Iterator<Bit> {
+        int cursor = 0;
+        int lastRet = -1;
+
+        @Override
+        public boolean hasNext() {
+            return cursor != length();
+        }
+
+        @Override
+        public Bit next() {
+            try {
+                int i = cursor;
+                Bit next = get(i);
+                lastRet = i;
+                cursor = i + 1;
+                return next;
+            } catch (IndexOutOfBoundsException e) {
+                throw new NoSuchElementException();
+            }
+        }
+    }
+
+    public Bit get(int index) {
+        if (index < 0 || index >= used)
+            throw new IndexOutOfBoundsException();
+        return table[index];
+    }
+
+    @Override
+    public Bits clone() {
+        Bits dest = null;
+        try{
+            dest = (Bits) super.clone();
+            dest.table = new Bit[used];
+            System.arraycopy(table, 0, dest.table, 0, used);
+        } catch (CloneNotSupportedException e){
+            e.printStackTrace();
+        }
+        return dest;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Bits bits = (Bits) o;
+        return Arrays.equals(table, bits.table);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(table);
     }
 }

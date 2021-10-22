@@ -1,8 +1,12 @@
 package com.github.myibu.algorithm;
 
+import com.github.myibu.algorithm.compress.Compressor;
+import com.github.myibu.algorithm.compress.LZ77Compressor;
+import com.github.myibu.algorithm.compress.LZFCompressor;
 import com.github.myibu.algorithm.data.Bits;
 import com.github.myibu.algorithm.data.Bytes;
-import com.github.myibu.algorithm.filter.BloomFilter;
+import com.github.myibu.algorithm.endode.GolombEncoder;
+import com.github.myibu.algorithm.filter.*;
 import com.github.myibu.algorithm.hash.MurmurHash2;
 import com.github.myibu.algorithm.hash.SHA256;
 import com.github.myibu.algorithm.hash.SipHash;
@@ -15,6 +19,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class AlgorithmTest {
     @Test
@@ -107,6 +113,89 @@ public class AlgorithmTest {
         Random rd1 = new MersenneTwisterRandom();
         for (int i = 0; i < 10; i++) {
             System.out.println(String.format("Mersenne Twister [%d]：%d", i, rd1.nextInt(10)));
+        }
+    }
+
+    @Test
+    public void testDictionaryTree() {
+        DictionaryTree tree = new DictionaryTree();
+        tree.insertAll(new String[] {"hi", "hello", "nihao", "see", "hey"});
+        System.out.println(tree.search("hello, i am myibu, i see"));
+    }
+
+    @Test
+    public void testSensitiveWordFilter() {
+        SensitiveWordFilter filter = new DFASensitiveWordFilter();
+        filter.addWords(Set.of("黄色", "绿色", "红色"));
+        System.out.println(filter.searchWords("昨天我过马路的时候先遇到红色灯，再遇到绿灯"));
+
+        SensitiveWordFilter filter1 = new AhoCorasickSensitiveWordFilter();
+        filter1.addWords(Set.of("黄色", "绿色", "红色"));
+        System.out.println(filter1.searchWords("昨天我过马路的时候先遇到红色灯，再遇到绿灯"));
+    }
+
+    @Test
+    public void testLZFCompressor() {
+        /**
+         * 1111122222
+         * hex:    01-31-31-20-00-00-32-20-00-00-32
+         * binary: 01-49-49-32-00-00-50-32-00-00-50
+         *
+         * 111112222233333
+         * hex:    01-31-31-20-00-00-32-40-00-00-33-20-00-01-33-33
+         * binary: 01-49-49-32-00-00-50-64-00-00-51-32-00-01-51-51
+         *
+         * 111112222233333344444
+         * hex:    01-31-31-20-00-00-32-40-00-00-33-60-00-00-34-20-00-00-34
+         * binary: 01-49-49-32-00-00-50-64-00-00-51-96-00-00-52-32-00-00-52
+         *
+         * this is a test
+         * hex:    04-74-68-69-73-20-20-02-05-61-20-74-65-73-74
+         * binary: 04-116-104-105-115-32-32-02-05-97-32-116-101-115-116
+         */
+//       [4, 116, 104, 105, 115, 32, 32, 2, 5, 97, 32, 116, 101, 115, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+//        byte[] in_data = "1111122222".getBytes(StandardCharsets.UTF_8);
+//        byte[] in_data = "111112222233333344444".getBytes(StandardCharsets.UTF_8);
+//        byte[] in_data = "this is a test".getBytes(StandardCharsets.UTF_8);
+        byte[] in_data = "Type \"help\", \"copyright\", \"credits\" or \"license\" for more information.".getBytes(StandardCharsets.UTF_8);
+        byte[] out_data = new byte[in_data.length*2];
+        LZFCompressor com = new LZFCompressor();
+        int op = com.compress(in_data, in_data.length, out_data);
+        byte[] decompress_data = new byte[out_data.length * 2];
+        op = com.decompress(out_data, op, decompress_data);
+        System.out.println(Arrays.toString(out_data));
+    }
+
+    @Test
+    public void testLZ77Compressor() {
+        String txt = "abracadabradabracadabradabracadabradabracadabradabracadabradabracadabradabracadabradabracadabradabracadabrad";
+        byte[] in_data = txt.getBytes(StandardCharsets.UTF_8);
+        byte[] out_data = new byte[in_data.length*2];
+        Compressor compressor = new LZ77Compressor();
+        compressor.setDebug(true);
+        int compressed = compressor.compress(in_data, in_data.length, out_data);
+        byte[] compressed_data = Arrays.copyOf(out_data, compressed);
+        byte[] decompressed_data = new byte[txt.length()];
+        int decompressed = compressor.decompress(compressed_data, compressed, decompressed_data);
+        Assert.assertEquals(txt,
+                new String(Arrays.copyOf(decompressed_data, decompressed), StandardCharsets.UTF_8));
+    }
+
+    @Test
+    public void testGolombEncoder() {
+        int m = 4;
+        GolombEncoder encoder = new GolombEncoder();
+        System.out.println(encoder.encode(0, 5));
+        System.out.println(encoder.encode(1, 5));
+        System.out.println(encoder.encode(4, 5));
+        List<Bits> encodeList = new ArrayList<>();
+        for (int i = 1; i <= 9; i++) {
+            encodeList.add(encoder.encode(i, m));
+        }
+        for (int i = 0; i < encodeList.size(); i++) {
+            Bits bits = encodeList.get(i);
+            System.out.println("encode " + (i+1) + " => " + bits);
+            System.out.println("decode " + bits + " => " + encoder.decode(bits, m));
         }
     }
 }
