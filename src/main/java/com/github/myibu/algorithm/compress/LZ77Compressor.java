@@ -3,6 +3,8 @@ package com.github.myibu.algorithm.compress;
 import com.github.myibu.algorithm.data.Bits;
 import com.github.myibu.algorithm.endode.GolombEncoder;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -74,41 +76,40 @@ public class LZ77Compressor implements Compressor {
             }
             int llStart = sEnd - 1, rrStart = 0, llEnd = 0, rrEnd = (lp = lEnd);
             int minMatched = 1, minIndex = 0;
-            while (llStart >= 0) {
-                int matched = 0, left = llStart, right = rrStart;
-                while (left >= 0 && right < rrEnd && sBuf[left--] == lWindow[right++]) {
+            for (int i = llStart; i >= 0; i--) {
+                int matched = 0, left = i, right = rrStart;
+                while (left >= llEnd && right < rrEnd && sBuf[left--] == lWindow[right++]) {
                     matched++;
                 }
                 if (matched >= minMatched) {
-                    minIndex = llStart;
+                    minIndex = i;
                     minMatched = matched;
                 }
-                llStart--;
             }
+            int lWindowLen = lWindow.length;
             // only one byte in window, set tuple to (0, 0, lWindow[0])
-            if (lWindow.length == 1) {
+            if (lWindowLen == 1) {
                 minIndex = 0;
             }
             // matched
             if (minIndex > 0) {
-                // 匹配到5个怎么编码
-                tuples.add(Arrays.asList( minIndex + 1, minMatched, (int)lWindow[minMatched]));
-                sp += (minMatched + 1);
-                ip += (minMatched + 1);
+                tuples.add(Arrays.asList( minIndex + 1, minMatched, (minMatched == lWindowLen) ? null : (int)lWindow[minMatched]));
+                sp += ((minMatched == lWindowLen) ? minMatched : (minMatched + 1));
+                ip += ((minMatched == lWindowLen) ? minMatched : (minMatched + 1));
             } else {
                 sp++;
                 ip++;
                 tuples.add(Arrays.asList(0, 0, (int)lWindow[0]));
             }
             if (isDebug) {
-                System.out.println("Txt=" + new String() + new String(in_data) + ", SearchBuffer="
+                System.out.println(", SearchBuffer="
                         +  new StringBuilder(new String(sBuf)).reverse().toString() + ", LookaheadWindow=" + new String(lWindow)
                         + " | " + tuples.get(tuples.size()-1)/* + " | " + (char)(tuples.get(tuples.size()-1).get(2).intValue())*/);
             }
         }
         int compressedLen = doEncode(tuples, out_data);
         if (isDebug) {
-            System.out.println("after encode: compressed rate=" + (compressedLen * 1.0 / in_len));
+            System.out.println("after encode: compressed rate=" + new BigDecimal(compressedLen * 100.0 / in_len).setScale(2, RoundingMode.HALF_UP) + "%");
         }
         return compressedLen;
     }
@@ -122,8 +123,11 @@ public class LZ77Compressor implements Compressor {
             bits.append(bits1);
             Bits bits2 = encoder.encode(tuple.get(1), l);
             bits.append(bits2);
-            Bits bits3 = Bits.ofByte((byte)tuple.get(2).intValue());
-            bits.append(bits3);
+            Bits bits3 = new Bits();
+            if (tuple.get(2) != null) {
+                bits3 = Bits.ofByte((byte) tuple.get(2).intValue());
+                bits.append(bits3);
+            }
             if (isDebug) {
                 System.out.println(tuple + " encoded result: " + "("+ bits1 + ", "+ bits2 + ", "+ bits3 + ")");
             }
@@ -181,12 +185,16 @@ public class LZ77Compressor implements Compressor {
                     }
                 }
             }
-            if (length == -1 || ip+8 > bits.length()) {
+            if (length == -1 ) {
                 break;
             }
-            int symbol = (int)bits.subBits(ip, ip+8).toByte();
-            tuples.add(Arrays.asList(offset, length, symbol));
-            ip += 8;
+            if (length != l && ip + 8 <= bits.length()) {
+                int symbol = (int) bits.subBits(ip, ip + 8).toByte();
+                tuples.add(Arrays.asList(offset, length, symbol));
+                ip += 8;
+            } else {
+                tuples.add(Arrays.asList(offset, length, null));
+            }
         }
         if (isDebug) {
             System.out.println("decode tuples=" + tuples);
@@ -197,16 +205,34 @@ public class LZ77Compressor implements Compressor {
     private int doDecode(List<List<Integer>> tuples, byte[] out_data) {
         Bits seq = new Bits();
         for (List<Integer> tuple: tuples) {
-            int offset = tuple.get(0), length = tuple.get(1), symbol = tuple.get(2);
-            Bits sb = Bits.ofByte((byte) symbol);
-            if (offset == 0) {
-                seq.append(sb);
+            int offset = tuple.get(0), length = tuple.get(1);
+            if (tuple.get(2) != null) {
+                int symbol = tuple.get(2);
+                Bits sb = Bits.ofByte((byte) symbol);
+                if (offset == 0) {
+                    seq.append(sb);
+                    if (isDebug) {
+                        System.out.println(tuple + ", seq=" + new String(seq.toByteArray()));
+                    }
+                } else {
+                    int start = seq.byteLength() < s ? seq.byteLength() - offset: s - offset;
+                    int used = seq.byteLength() < s ? 0 : seq.byteLength() - s;
+                    seq.append(seq.subBits((used + start) * 8, (used + start + length) * 8)).append(sb);
+                    if (isDebug) {
+                        System.out.println(tuple + ", seq=" + new String(seq.toByteArray()));
+                    }
+                }
             } else {
                 int start = seq.byteLength() < s ? seq.byteLength() - offset: s - offset;
                 int used = seq.byteLength() < s ? 0 : seq.byteLength() - s;
-                seq.append(seq.subBits((used + start) * 8, (used + start + length) * 8)).append(sb);
-//                System.out.println("start=" + start + ", used=" + used + ", length=" +  length + ", seq=" + seq);
+                seq.append(seq.subBits((used + start) * 8, (used + start + length) * 8));
+                if (isDebug) {
+                    System.out.println(tuple + ", seq=" + new String(seq.toByteArray()));
+                }
             }
+        }
+        if (isDebug) {
+            System.out.println("after decode, bits=" + seq);
         }
         int len = seq.byteLength();
         for (int i = 0; i < len; i++) {
@@ -221,5 +247,10 @@ public class LZ77Compressor implements Compressor {
     @Override
     public void setDebug(boolean isDebug) {
         this.isDebug = isDebug;
+    }
+
+    public void setSL(int s, int l) {
+        this.s = s;
+        this.l = l;
     }
 }

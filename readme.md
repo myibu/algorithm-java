@@ -49,7 +49,7 @@ Reference to: [MersenneTwister.pdf](./docs/HoffmanAndGolombCoding.pdf)
 <dependency>
   <groupId>com.github.myibu</groupId>
   <artifactId>algorithm-java</artifactId>
-  <version>1.0.0b</version>
+  <version>1.0.0c</version>
 </dependency>
 ```
 

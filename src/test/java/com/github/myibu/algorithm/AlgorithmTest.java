@@ -168,7 +168,6 @@ public class AlgorithmTest {
 
     @Test
     public void testLZ77Compressor() {
-        //todo
         String txt = "abracadabradabracadabradabracadabradabracadabradabracadabradabracadabradabracadabradabracadabradabracadabrad";
         byte[] in_data = txt.getBytes(StandardCharsets.UTF_8);
         byte[] out_data = new byte[in_data.length*2];
@@ -176,7 +175,7 @@ public class AlgorithmTest {
         compressor.setDebug(true);
         int compressed = compressor.compress(in_data, in_data.length, out_data);
         byte[] compressed_data = Arrays.copyOf(out_data, compressed);
-        byte[] decompressed_data = new byte[compressed * 2];
+        byte[] decompressed_data = new byte[txt.length()];
         int decompressed = compressor.decompress(compressed_data, compressed, decompressed_data);
         Assert.assertEquals(txt,
                 new String(Arrays.copyOf(decompressed_data, decompressed), StandardCharsets.UTF_8));
