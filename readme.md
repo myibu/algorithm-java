@@ -39,10 +39,10 @@ Reference to: [MersenneTwister.pdf](./docs/MersenneTwister.pdf)
 ### AhoCorasickSensitiveWordFilter
 
 ### LZ77Compressor
-Reference to: [MersenneTwister.pdf](./docs/LZ77.pdf)
+Reference to: [LZ77.pdf](./docs/LZ77.pdf)
 
 ### GolombEncoder
-Reference to: [MersenneTwister.pdf](./docs/HoffmanAndGolombCoding.pdf)
+Reference to: [HoffmanAndGolombCoding.pdf](./docs/HoffmanAndGolombCoding.pdf)
 
 ## Installation
 ```bash
