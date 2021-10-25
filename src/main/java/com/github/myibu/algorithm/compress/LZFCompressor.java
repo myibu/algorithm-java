@@ -102,7 +102,7 @@ public class LZFCompressor implements Compressor {
                     htab[IDX(hval)] = ip - LZF_HSLOT_BIAS;
                     ip++;
                 }
-                while ((--len) > 0);
+                while ((len--) > 0);
             }
             else {
                 lit++;
@@ -141,10 +141,12 @@ public class LZFCompressor implements Compressor {
             ctrl = in_data[ip++];
 
             if (ctrl < (1 << 5)) /* literal run */ {
-                ctrl++;
+                    ctrl++;
 
                 if (op + ctrl > out_len) {
-                    //SET_ERRNO (E2BIG);
+                    if (isDebug) {
+                        System.out.println("SET_ERRNO (E2BIG);");
+                    }
                     return 0;
                 }
 
@@ -161,12 +163,16 @@ public class LZFCompressor implements Compressor {
                 ref -= in_data[ip++];
 
                 if (op + len + 2 > out_len) {
-                    //SET_ERRNO (E2BIG);
+                    if (isDebug) {
+                        System.out.println("SET_ERRNO (E2BIG);");
+                    }
                     return 0;
                 }
 
                 if (ref < 0) {
-                    //SET_ERRNO (EINVAL);
+                    if (isDebug) {
+                        System.out.println("SET_ERRNO (EINVAL);");
+                    }
                     return 0;
                 }
                 out_data[op++] = out_data[ref++];
