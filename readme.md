@@ -41,6 +41,14 @@ Reference to: [MersenneTwister.pdf](./docs/MersenneTwister.pdf)
 ### LZ77Compressor
 Reference to: [LZ77.pdf](./docs/LZ77.pdf)
 
+### LZWCompressor
+Reference to: [LZW.pdf](./docs/LZW.pdf)
+
+### LZFCompressor
+Reference to: 
+[lzf_c.c](./docs/lzf_c.c)
+[lzf_d.c](./docs/lzf_d.c)
+
 ### GolombEncoder
 Reference to: [HoffmanAndGolombCoding.pdf](./docs/HoffmanAndGolombCoding.pdf)
 
@@ -49,7 +57,7 @@ Reference to: [HoffmanAndGolombCoding.pdf](./docs/HoffmanAndGolombCoding.pdf)
 <dependency>
   <groupId>com.github.myibu</groupId>
   <artifactId>algorithm-java</artifactId>
-  <version>1.0.0c</version>
+  <version>1.0.0d</version>
 </dependency>
 ```
 

@@ -1,5 +1,7 @@
 package com.github.myibu.algorithm.compress;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -50,9 +52,10 @@ public class LZFCompressor implements Compressor {
             htab[hslot] = ip;
 
             if ((off = ip - ref - 1) < MAX_OFF
-                && ref > 0
-                && in_data[ref + 2] == in_data[ip + 2]
-                && ((in_data[ref+1] << 8) | in_data[ref+0]) == ((in_data[ip+1] << 8) | in_data[ip+0])) {
+                && ref < ip
+                && in_data[ref + 0] == in_data[ip + 0]
+                && in_data[ref + 1] == in_data[ip + 1]
+                && in_data[ref + 2] == in_data[ip + 2]) {
                 /* match found at *ref++ */
                 int len = 2;
                 int maxlen = in_len - ip - len;
@@ -83,10 +86,7 @@ public class LZFCompressor implements Compressor {
 
                 lit = 0; op++; /* start run */
 
-                ip += len+1;
-
-                if (ip >= in_len - 2)
-                    break;
+                ip += len -1;
 
                 hval = FRST(in_data, ip);
 
@@ -94,15 +94,9 @@ public class LZFCompressor implements Compressor {
                 htab[IDX(hval)] = ip - LZF_HSLOT_BIAS;
                 ip++;
 
-                ip -= len + 1;
-
-                do
-                {
-                    hval = NEXT(hval, in_data, ip);
-                    htab[IDX(hval)] = ip - LZF_HSLOT_BIAS;
-                    ip++;
-                }
-                while ((--len) > 0);
+                hval = NEXT(hval, in_data, ip);
+                htab[IDX(hval)] = ip - LZF_HSLOT_BIAS;
+                ip++;
             }
             else {
                 lit++;
@@ -128,7 +122,9 @@ public class LZFCompressor implements Compressor {
 
         out_data[op- lit - 1] = (byte)(lit - 1); /* end run */
         op -= (lit==0 ? 1: 0); /* undo run if length is zero */
-
+        if (isDebug) {
+            System.out.println("after encode: compressed rate=" + new BigDecimal(op * 100.0 / in_len).setScale(2, RoundingMode.HALF_UP) + "%");
+        }
         return op;
     }
 
@@ -138,13 +134,15 @@ public class LZFCompressor implements Compressor {
         int ip = 0, op = 0;
         while (ip < in_len) {
             int ctrl;
-            ctrl = in_data[ip++];
+            ctrl = in_data[ip++] & 255;
 
             if (ctrl < (1 << 5)) /* literal run */ {
-                ctrl++;
+                    ctrl++;
 
                 if (op + ctrl > out_len) {
-                    //SET_ERRNO (E2BIG);
+                    if (isDebug) {
+                        System.out.println("SET_ERRNO (E2BIG);");
+                    }
                     return 0;
                 }
 
@@ -156,17 +154,21 @@ public class LZFCompressor implements Compressor {
                 int len = ctrl >> 5;
                 int ref = op - ((ctrl & 0x1f) << 8) - 1;
                 if (len == 7)
-                    len += in_data[ip++];
+                    len += in_data[ip++] & 255;
 
-                ref -= in_data[ip++];
+                ref -= in_data[ip++] & 255;
 
                 if (op + len + 2 > out_len) {
-                    //SET_ERRNO (E2BIG);
+                    if (isDebug) {
+                        System.out.println("SET_ERRNO (E2BIG);");
+                    }
                     return 0;
                 }
 
                 if (ref < 0) {
-                    //SET_ERRNO (EINVAL);
+                    if (isDebug) {
+                        System.out.println("SET_ERRNO (EINVAL);");
+                    }
                     return 0;
                 }
                 out_data[op++] = out_data[ref++];

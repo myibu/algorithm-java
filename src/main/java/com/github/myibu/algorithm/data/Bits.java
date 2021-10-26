@@ -1,5 +1,6 @@
 package com.github.myibu.algorithm.data;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -233,6 +234,15 @@ public class Bits implements Iterable<Bit>, Cloneable {
         }
         return bits;
     }
+
+    public static Bits ofRawString(String raw) {
+        if (raw == null || raw.length() == 0) {
+            return new Bits();
+        }
+        byte[] bys = raw.getBytes(StandardCharsets.UTF_8);
+        return ofByte(bys);
+    }
+
     public static Bits ofByte(byte val) {
         return ofByte(val, BYTE_SIZE);
     }
@@ -419,6 +429,60 @@ public class Bits implements Iterable<Bit>, Cloneable {
 
     public static Bits ofOne() {
         return ofOne(1);
+    }
+
+    public static Bits ofBits(byte val, int len) {
+        if (len > BYTE_SIZE) {
+            throw new IllegalArgumentException(len + " can not larger than byte value");
+        }
+        Bits bits = new Bits();
+        bits.expand(len);
+        int i = 0, j = len-1;
+        for (; i < len; i++, j--) {
+            bits.table[j] = (((val>>i) & 0x01) ==1) ? Bit.ONE : Bit.ZERO;
+        }
+        bits.used += len;
+        return bits;
+    }
+
+    public static Bits ofBits(short val, int len) {
+        if (len > SHORT_SIZE) {
+            throw new IllegalArgumentException(len + " can not larger than short value");
+        }
+        Bits bits = new Bits();
+        bits.expand(len);
+        int i = 0, j = len-1;
+        for (; i < len; i++, j--) {
+            bits.table[j] = (((val>>i) & 0x01) ==1) ? Bit.ONE : Bit.ZERO;
+        }
+        bits.used += len;
+        return bits;
+    }
+    public static Bits ofBits(int val, int len) {
+        if (len > INT_SIZE) {
+            throw new IllegalArgumentException(len + " can not larger than int value");
+        }
+        Bits bits = new Bits();
+        bits.expand(len);
+        int i = 0, j = len-1;
+        for (; i < len; i++, j--) {
+            bits.table[j] = (((val>>i) & 0x01) ==1) ? Bit.ONE : Bit.ZERO;
+        }
+        bits.used += len;
+        return bits;
+    }
+    public static Bits ofBits(long val, int len) {
+        if (len > LONG_SIZE) {
+            throw new IllegalArgumentException(len + " can not larger than long value");
+        }
+        Bits bits = new Bits();
+        bits.expand(len);
+        int i = 0, j = len-1;
+        for (; i < len; i++, j--) {
+            bits.table[j] = (((val>>i) & 0x01) ==1) ? Bit.ONE : Bit.ZERO;
+        }
+        bits.used += len;
+        return bits;
     }
 
     public Bits append(Bits other) {
