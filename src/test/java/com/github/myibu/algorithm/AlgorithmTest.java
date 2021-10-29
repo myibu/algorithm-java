@@ -1,12 +1,10 @@
 package com.github.myibu.algorithm;
 
-import com.github.myibu.algorithm.compress.Compressor;
-import com.github.myibu.algorithm.compress.LZ77Compressor;
-import com.github.myibu.algorithm.compress.LZFCompressor;
-import com.github.myibu.algorithm.compress.LZWCompressor;
+import com.github.myibu.algorithm.compress.*;
 import com.github.myibu.algorithm.data.Bits;
 import com.github.myibu.algorithm.data.Bytes;
 import com.github.myibu.algorithm.endode.GolombEncoder;
+import com.github.myibu.algorithm.endode.HoffmanEncoder;
 import com.github.myibu.algorithm.filter.*;
 import com.github.myibu.algorithm.hash.MurmurHash2;
 import com.github.myibu.algorithm.hash.SHA256;
@@ -21,7 +19,6 @@ import org.junit.Test;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AlgorithmTest {
     @Test
@@ -191,6 +188,33 @@ public class AlgorithmTest {
         byte[] in_data = txt.getBytes(StandardCharsets.UTF_8);
         byte[] out_data = new byte[in_data.length*2];
         Compressor compressor = new LZWCompressor();
+        compressor.setDebug(true);
+        int compressed = compressor.compress(in_data, in_data.length, out_data);
+        byte[] compressed_data = Arrays.copyOf(out_data, compressed);
+        byte[] decompressed_data = new byte[in_data.length];
+        int decompressed = compressor.decompress(compressed_data, compressed, decompressed_data);
+        Assert.assertEquals(txt,
+                new String(Arrays.copyOf(decompressed_data, decompressed), StandardCharsets.UTF_8));
+    }
+
+    @Test
+    public void testHoffmanEncoder() {
+        String txt = "brbcadabdb";
+        byte[] in_data = txt.getBytes(StandardCharsets.UTF_8);
+        byte[] out_data = new byte[in_data.length*2];
+        HoffmanEncoder encoder = new HoffmanEncoder();
+        Bits encodedBits = encoder.encode(in_data, in_data.length);
+        byte[] decodedBytes = encoder.decode(encodedBits);
+        Assert.assertEquals(txt,
+                new String(decodedBytes, StandardCharsets.UTF_8));
+    }
+
+    @Test
+    public void testDeflateCompressor() {
+        String txt = "banana_bandanatttttttttttt";
+        byte[] in_data = txt.getBytes(StandardCharsets.UTF_8);
+        byte[] out_data = new byte[in_data.length*2];
+        Compressor compressor = new DeflateCompressor();
         compressor.setDebug(true);
         int compressed = compressor.compress(in_data, in_data.length, out_data);
         byte[] compressed_data = Arrays.copyOf(out_data, compressed);
