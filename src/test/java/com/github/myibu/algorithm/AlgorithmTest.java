@@ -13,6 +13,7 @@ import com.github.myibu.algorithm.random.LinearCongruentialRandom;
 import com.github.myibu.algorithm.random.MersenneTwisterRandom;
 import com.github.myibu.algorithm.random.Random;
 import com.github.myibu.algorithm.random.RandomArrays;
+import com.github.myibu.algorithm.sort.*;
 import com.github.myibu.algorithm.validate.IDCardChecker;
 import org.junit.Assert;
 import org.junit.Test;
@@ -222,5 +223,87 @@ public class AlgorithmTest {
         int decompressed = compressor.decompress(compressed_data, compressed, decompressed_data);
         Assert.assertEquals(txt,
                 new String(Arrays.copyOf(decompressed_data, decompressed), StandardCharsets.UTF_8));
+    }
+
+    @Test
+    public void testBubbleSorts() {
+        int[] a = new int[]{2,5,6,1,8,8,9,7,7,3,4};
+        Sorts sorts = new BubbleSorts();
+        sorts.sort(a);
+        int n = a.length;
+        for (int i = 0; i < n; ++i)
+            System.out.print(a[i] + " ");
+        System.out.println();
+    }
+
+    @Test
+    public void testInsertionSorts() {
+        int[] a = new int[]{2,5,6,1,8,8,9,7,7,3,4};
+        Sorts sorts = new InsertionSorts();
+        sorts.sort(a);
+        int n = a.length;
+        for (int i = 0; i < n; ++i)
+            System.out.print(a[i] + " ");
+        System.out.println();
+    }
+
+    @Test
+    public void testQuickSorts() {
+        int[] a = new int[]{2,5,6,1,8,8,9,7,7,3,4};
+        Sorts sorts = new QuickSorts();
+        sorts.sort(a);
+        int n = a.length;
+        for (int i = 0; i < n; ++i)
+            System.out.print(a[i] + " ");
+        System.out.println();
+    }
+
+    @Test
+    public void testSelectionSorts() {
+        int[] a = new int[]{2,5,6,1,8,8,9,7,7,3,4};
+        Sorts sorts = new SelectionSorts();
+        sorts.sort(a);
+        int n = a.length;
+        for (int i = 0; i < n; ++i)
+            System.out.print(a[i] + " ");
+        System.out.println();
+    }
+
+    @Test
+    public void testHeapSorts() {
+        int[] a = new int[]{2,5,6,1,8,8,9,7,7,3,4};
+        Sorts sorts = new HeapSorts();
+        sorts.sort(a);
+        int n = a.length;
+        for (int i = 0; i < n; ++i)
+            System.out.print(a[i] + " ");
+        System.out.println();
+        float arr[] = {(float) 0.897, (float) 0.565,
+                (float) 0.656, (float) 0.1234,
+                (float) 0.665, (float) 0.3434};
+    }
+
+    @Test
+    public void testBucketSorts() {
+        // todo compelte
+//        float a[] = {0.897f, 0.565f, 0.656f, 0.1234f, 0.665f, 0.3434f};
+        int[] a = new int[]{2,5,6,1,8,8,90,7,7,3,4};
+        Sorts sorts = new BucketSorts();
+        sorts.sort(a);
+        int n = a.length;
+        for (int i = 0; i < n; ++i)
+            System.out.print(a[i] + " ");
+        System.out.println();
+    }
+
+    @Test
+    public void testMergeSorts() {
+        String[] a = {"bb", "ba","a", "aab"};
+        Sorts sorts = new MergeSorts();
+        sorts.sort(a, Comparator.comparingInt(String::length));
+        int n = a.length;
+        for (int i = 0; i < n; ++i)
+            System.out.print(a[i] + " ");
+        System.out.println();
     }
 }
