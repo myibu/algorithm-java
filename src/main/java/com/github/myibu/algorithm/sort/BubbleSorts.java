@@ -6,12 +6,10 @@ import java.util.Comparator;
  * @author myibu
  * Created on 2021/11/2
  */
-public class BubbleSorts implements Sorts {
-	@Override
-	public void sort(byte[] a) {
-		int n = a.length;
-		for (int i = 0; i < n-1; i++) {
-			for (int j = 0; j < n - i - 1; j++) {
+public class BubbleSorts extends AbstractSorts {
+	public static void bubbleSort(byte[] a, int fromIndex, int toIndex) {
+		for (int i = 0; i < toIndex-fromIndex; i++) {
+			for (int j = fromIndex; j < toIndex - i - 1; j++) {
 				if (a[j] > a[j + 1]) {
 					byte temp = a[j];
 					a[j] = a[j + 1];
@@ -21,13 +19,10 @@ public class BubbleSorts implements Sorts {
 		}
 	}
 
-	@Override
-	public void sort(short[] a) {
-		int n = a.length;
-		for (int i = 0; i < n-1; i++) {
-			for (int j = 0; j < n - i - 1; j++) {
+	public static void bubbleSort(short[] a, int fromIndex, int toIndex) {
+		for (int i = 0; i < toIndex-fromIndex; i++) {
+			for (int j = fromIndex; j < toIndex - i - 1; j++) {
 				if (a[j] > a[j + 1]) {
-					// swap arr[j+1] and arr[j]
 					short temp = a[j];
 					a[j] = a[j + 1];
 					a[j + 1] = temp;
@@ -36,13 +31,10 @@ public class BubbleSorts implements Sorts {
 		}
 	}
 
-	@Override
-	public void sort(int[] a) {
-		int n = a.length;
-		for (int i = 0; i < n-1; i++) {
-			for (int j = 0; j < n - i - 1; j++) {
+	public static void bubbleSort(int[] a, int fromIndex, int toIndex) {
+		for (int i = 0; i < toIndex-fromIndex; i++) {
+			for (int j = fromIndex; j < toIndex - i - 1; j++) {
 				if (a[j] > a[j + 1]) {
-					// swap arr[j+1] and arr[j]
 					int temp = a[j];
 					a[j] = a[j + 1];
 					a[j + 1] = temp;
@@ -51,13 +43,10 @@ public class BubbleSorts implements Sorts {
 		}
 	}
 
-	@Override
-	public void sort(long[] a) {
-		int n = a.length;
-		for (int i = 0; i < n-1; i++) {
-			for (int j = 0; j < n - i - 1; j++) {
+	public static void bubbleSort(long[] a, int fromIndex, int toIndex) {
+		for (int i = 0; i < toIndex-fromIndex; i++) {
+			for (int j = fromIndex; j < toIndex - i - 1; j++) {
 				if (a[j] > a[j + 1]) {
-					// swap arr[j+1] and arr[j]
 					long temp = a[j];
 					a[j] = a[j + 1];
 					a[j + 1] = temp;
@@ -66,13 +55,10 @@ public class BubbleSorts implements Sorts {
 		}
 	}
 
-	@Override
-	public void sort(float[] a) {
-		int n = a.length;
-		for (int i = 0; i < n-1; i++) {
-			for (int j = 0; j < n - i - 1; j++) {
+	public static void bubbleSort(float[] a, int fromIndex, int toIndex) {
+		for (int i = 0; i < toIndex-fromIndex; i++) {
+			for (int j = fromIndex; j < toIndex - i - 1; j++) {
 				if (a[j] > a[j + 1]) {
-					// swap arr[j+1] and arr[j]
 					float temp = a[j];
 					a[j] = a[j + 1];
 					a[j + 1] = temp;
@@ -81,13 +67,10 @@ public class BubbleSorts implements Sorts {
 		}
 	}
 
-	@Override
-	public void sort(double[] a) {
-		int n = a.length;
-		for (int i = 0; i < n-1; i++) {
-			for (int j = 0; j < n - i - 1; j++) {
+	public static void bubbleSort(double[] a, int fromIndex, int toIndex) {
+		for (int i = 0; i < toIndex-fromIndex; i++) {
+			for (int j = fromIndex; j < toIndex - i - 1; j++) {
 				if (a[j] > a[j + 1]) {
-					// swap arr[j+1] and arr[j]
 					double temp = a[j];
 					a[j] = a[j + 1];
 					a[j + 1] = temp;
@@ -96,13 +79,10 @@ public class BubbleSorts implements Sorts {
 		}
 	}
 
-	@Override
-	public void sort(char[] a) {
-		int n = a.length;
-		for (int i = 0; i < n-1; i++) {
-			for (int j = 0; j < n - i - 1; j++) {
+	public static void bubbleSort(char[] a, int fromIndex, int toIndex) {
+		for (int i = 0; i < toIndex-fromIndex; i++) {
+			for (int j = fromIndex; j < toIndex - i - 1; j++) {
 				if (a[j] > a[j + 1]) {
-					// swap arr[j+1] and arr[j]
 					char temp = a[j];
 					a[j] = a[j + 1];
 					a[j + 1] = temp;
@@ -111,14 +91,11 @@ public class BubbleSorts implements Sorts {
 		}
 	}
 
-	@Override
-	public void sort(Object[] a) {
-		int n = a.length;
-		for (int i = 0; i < n-1; i++) {
-			for (int j = 0; j < n - i - 1; j++) {
+	public static void bubbleSort(Object[] a, int fromIndex, int toIndex) {
+		for (int i = 0; i < toIndex-fromIndex; i++) {
+			for (int j = fromIndex; j < toIndex - i - 1; j++) {
 				Comparable pre = (Comparable)a[j];
 				if (pre.compareTo(a[j+1]) > 0) {
-					// swap arr[j+1] and arr[j]
 					Object temp = a[j];
 					a[j] = a[j + 1];
 					a[j + 1] = temp;
@@ -127,18 +104,61 @@ public class BubbleSorts implements Sorts {
 		}
 	}
 
-	@Override
-	public <T> void sort(T[] a, Comparator<? super T> c) {
-		int n = a.length;
-		for (int i = 0; i < n-1; i++) {
-			for (int j = 0; j < n - i - 1; j++) {
+	public <T> void bubbleSort(T[] a, int fromIndex, int toIndex, Comparator<? super T> c) {
+		for (int i = 0; i < toIndex-fromIndex; i++) {
+			for (int j = fromIndex; j < toIndex - i - 1; j++) {
 				if (c.compare(a[j], a[j+1]) > 0) {
-					// swap arr[j+1] and arr[j]
 					T temp = a[j];
 					a[j] = a[j + 1];
 					a[j + 1] = temp;
 				}
 			}
 		}
+	}
+
+
+	@Override
+	public void sort(byte[] a, int fromIndex, int toIndex) {
+		bubbleSort(a, fromIndex, toIndex);
+	}
+
+	@Override
+	public void sort(short[] a, int fromIndex, int toIndex) {
+		bubbleSort(a, fromIndex, toIndex);
+	}
+
+	@Override
+	public void sort(int[] a, int fromIndex, int toIndex) {
+		bubbleSort(a, fromIndex, toIndex);
+	}
+
+	@Override
+	public void sort(long[] a, int fromIndex, int toIndex) {
+		bubbleSort(a, fromIndex, toIndex);
+	}
+
+	@Override
+	public void sort(float[] a, int fromIndex, int toIndex) {
+		bubbleSort(a, fromIndex, toIndex);
+	}
+
+	@Override
+	public void sort(double[] a, int fromIndex, int toIndex) {
+		bubbleSort(a, fromIndex, toIndex);
+	}
+
+	@Override
+	public void sort(char[] a, int fromIndex, int toIndex) {
+		bubbleSort(a, fromIndex, toIndex);
+	}
+
+	@Override
+	public void sort(Object[] a, int fromIndex, int toIndex) {
+		bubbleSort(a, fromIndex, toIndex);
+	}
+
+	@Override
+	public <T> void sort(T[] a, int fromIndex, int toIndex, Comparator<? super T> c) {
+		bubbleSort(a, fromIndex, toIndex, c);
 	}
 }

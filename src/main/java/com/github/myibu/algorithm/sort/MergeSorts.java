@@ -7,8 +7,8 @@ import java.util.Comparator;
  * @author myibu
  * Created on 2021/11/2
  */
-public class MergeSorts implements Sorts {
-	private void merge(byte a[], int l, int m, int r) {
+public class MergeSorts extends AbstractSorts {
+	public static void merge(byte a[], int l, int m, int r) {
 		int n1 = m - l + 1;
 		int n2 = r - m;
 
@@ -48,17 +48,17 @@ public class MergeSorts implements Sorts {
 		}
 	}
 
-	private void sort(byte a[], int l, int r) {
+	public static void mergeSort(byte a[], int l, int r) {
 		if (l < r) {
 			int m =l+ (r-l)/2;
 
-			sort(a, l, m);
-			sort(a, m + 1, r);
+			mergeSort(a, l, m);
+			mergeSort(a, m + 1, r);
 
 			merge(a, l, m, r);
 		}
 	}
-	private void merge(short a[], int l, int m, int r) {
+	public static void merge(short a[], int l, int m, int r) {
 		int n1 = m - l + 1;
 		int n2 = r - m;
 
@@ -98,17 +98,17 @@ public class MergeSorts implements Sorts {
 		}
 	}
 
-	private void sort(short a[], int l, int r) {
+	public static void mergeSort(short a[], int l, int r) {
 		if (l < r) {
 			int m =l+ (r-l)/2;
 
-			sort(a, l, m);
-			sort(a, m + 1, r);
+			mergeSort(a, l, m);
+			mergeSort(a, m + 1, r);
 
 			merge(a, l, m, r);
 		}
 	}
-	private void merge(int a[], int l, int m, int r) {
+	public static void merge(int a[], int l, int m, int r) {
 		int n1 = m - l + 1;
 		int n2 = r - m;
 
@@ -148,17 +148,17 @@ public class MergeSorts implements Sorts {
 		}
 	}
 
-	private void sort(int a[], int l, int r) {
+	public static void mergeSort(int a[], int l, int r) {
 		if (l < r) {
 			int m =l+ (r-l)/2;
 
-			sort(a, l, m);
-			sort(a, m + 1, r);
+			mergeSort(a, l, m);
+			mergeSort(a, m + 1, r);
 
 			merge(a, l, m, r);
 		}
 	}
-	private void merge(long a[], int l, int m, int r) {
+	public static void merge(long a[], int l, int m, int r) {
 		int n1 = m - l + 1;
 		int n2 = r - m;
 
@@ -198,17 +198,17 @@ public class MergeSorts implements Sorts {
 		}
 	}
 
-	private void sort(long a[], int l, int r) {
+	public static void mergeSort(long a[], int l, int r) {
 		if (l < r) {
 			int m =l+ (r-l)/2;
 
-			sort(a, l, m);
-			sort(a, m + 1, r);
+			mergeSort(a, l, m);
+			mergeSort(a, m + 1, r);
 
 			merge(a, l, m, r);
 		}
 	}
-	private void merge(float a[], int l, int m, int r) {
+	public static void merge(float a[], int l, int m, int r) {
 		int n1 = m - l + 1;
 		int n2 = r - m;
 
@@ -248,17 +248,17 @@ public class MergeSorts implements Sorts {
 		}
 	}
 
-	private void sort(float a[], int l, int r) {
+	public static void mergeSort(float a[], int l, int r) {
 		if (l < r) {
 			int m =l+ (r-l)/2;
 
-			sort(a, l, m);
-			sort(a, m + 1, r);
+			mergeSort(a, l, m);
+			mergeSort(a, m + 1, r);
 
 			merge(a, l, m, r);
 		}
 	}
-	private void merge(double a[], int l, int m, int r) {
+	public static void merge(double a[], int l, int m, int r) {
 		int n1 = m - l + 1;
 		int n2 = r - m;
 
@@ -298,17 +298,17 @@ public class MergeSorts implements Sorts {
 		}
 	}
 
-	private void sort(double a[], int l, int r) {
+	public static void mergeSort(double a[], int l, int r) {
 		if (l < r) {
 			int m =l+ (r-l)/2;
 
-			sort(a, l, m);
-			sort(a, m + 1, r);
+			mergeSort(a, l, m);
+			mergeSort(a, m + 1, r);
 
 			merge(a, l, m, r);
 		}
 	}
-	private void merge(char a[], int l, int m, int r) {
+	public static void merge(char a[], int l, int m, int r) {
 		int n1 = m - l + 1;
 		int n2 = r - m;
 
@@ -348,17 +348,17 @@ public class MergeSorts implements Sorts {
 		}
 	}
 
-	private void sort(char a[], int l, int r) {
+	public static void mergeSort(char a[], int l, int r) {
 		if (l < r) {
 			int m =l+ (r-l)/2;
 
-			sort(a, l, m);
-			sort(a, m + 1, r);
+			mergeSort(a, l, m);
+			mergeSort(a, m + 1, r);
 
 			merge(a, l, m, r);
 		}
 	}
-	private void merge(Object a[], int l, int m, int r) {
+	public static void merge(Object a[], int l, int m, int r) {
 		int n1 = m - l + 1;
 		int n2 = r - m;
 
@@ -398,18 +398,18 @@ public class MergeSorts implements Sorts {
 		}
 	}
 
-	private void sort(Object a[], int l, int r) {
+	public static void mergeSort(Object a[], int l, int r) {
 		if (l < r) {
 			int m =l+ (r-l)/2;
 
-			sort(a, l, m);
-			sort(a, m + 1, r);
+			mergeSort(a, l, m);
+			mergeSort(a, m + 1, r);
 
 			merge(a, l, m, r);
 		}
 	}
 
-	private <T> void merge(T a[], int l, int m, int r, Comparator<? super T> c) {
+	public static <T> void merge(T a[], int l, int m, int r, Comparator<? super T> c) {
 		int n1 = m - l + 1;
 		int n2 = r - m;
 
@@ -449,58 +449,59 @@ public class MergeSorts implements Sorts {
 		}
 	}
 
-	private <T> void sort(T a[], int l, int r, Comparator<? super T> c) {
+	public static <T> void mergeSort(T a[], int l, int r, Comparator<? super T> c) {
 		if (l < r) {
 			int m =l+ (r-l)/2;
 
-			sort(a, l, m, c);
-			sort(a, m + 1, r, c);
+			mergeSort(a, l, m, c);
+			mergeSort(a, m + 1, r, c);
 
 			merge(a, l, m, r, c);
 		}
 	}
-	@Override
-	public void sort(byte[] a) {
-		sort(a, 0, a.length-1);
-	}
 
-	@Override
-	public void sort(short[] a) {
-		sort(a, 0, a.length-1);
-	}
+    @Override
+    public void sort(byte[] a, int fromIndex, int toIndex) {
+        mergeSort(a, fromIndex, toIndex-1);
+    }
 
-	@Override
-	public void sort(int[] a) {
-		sort(a, 0, a.length-1);
-	}
+    @Override
+    public void sort(short[] a, int fromIndex, int toIndex) {
+        mergeSort(a, fromIndex, toIndex-1);
+    }
 
-	@Override
-	public void sort(long[] a) {
-		sort(a, 0, a.length-1);
-	}
+    @Override
+    public void sort(int[] a, int fromIndex, int toIndex) {
+        mergeSort(a, fromIndex, toIndex-1);
+    }
 
-	@Override
-	public void sort(float[] a) {
-		sort(a, 0, a.length-1);
-	}
+    @Override
+    public void sort(long[] a, int fromIndex, int toIndex) {
+        mergeSort(a, fromIndex, toIndex-1);
+    }
 
-	@Override
-	public void sort(double[] a) {
-		sort(a, 0, a.length-1);
-	}
+    @Override
+    public void sort(float[] a, int fromIndex, int toIndex) {
+        mergeSort(a, fromIndex, toIndex-1);
+    }
 
-	@Override
-	public void sort(char[] a) {
-		sort(a, 0, a.length-1);
-	}
+    @Override
+    public void sort(double[] a, int fromIndex, int toIndex) {
+        mergeSort(a, fromIndex, toIndex-1);
+    }
 
-	@Override
-	public void sort(Object[] a) {
-		sort(a, 0, a.length-1);
-	}
+    @Override
+    public void sort(char[] a, int fromIndex, int toIndex) {
+        mergeSort(a, fromIndex, toIndex-1);
+    }
 
-	@Override
-	public <T> void sort(T[] a, Comparator<? super T> c) {
-		sort(a, 0, a.length-1, c);
-	}
+    @Override
+    public void sort(Object[] a, int fromIndex, int toIndex) {
+        mergeSort(a, fromIndex, toIndex-1);
+    }
+
+    @Override
+    public <T> void sort(T[] a, int fromIndex, int toIndex, Comparator<? super T> c) {
+        mergeSort(a, fromIndex, toIndex-1, c);
+    }
 }

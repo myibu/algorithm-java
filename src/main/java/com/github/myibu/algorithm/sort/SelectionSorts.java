@@ -7,13 +7,11 @@ import java.util.Comparator;
  * @author myibu
  * Created on 2021/11/2
  */
-public class SelectionSorts implements Sorts {
-	@Override
-	public void sort(byte[] a) {
-		int n = a.length;
-		for (int i = 0; i < n-1; i++) {
+public class SelectionSorts extends AbstractSorts {
+	public static void selectSort(byte[] a, int fromIndex, int toIndex) {
+		for (int i = fromIndex; i < toIndex-1; i++) {
 			int min_idx = i;
-			for (int j = i+1; j < n; j++)
+			for (int j = i+1; j < toIndex; j++)
 				if (a[j] < a[min_idx])
 					min_idx = j;
 
@@ -23,12 +21,10 @@ public class SelectionSorts implements Sorts {
 		}
 	}
 
-	@Override
-	public void sort(short[] a) {
-		int n = a.length;
-		for (int i = 0; i < n-1; i++) {
+	public static void selectSort(short[] a, int fromIndex, int toIndex) {
+		for (int i = fromIndex; i < toIndex-1; i++) {
 			int min_idx = i;
-			for (int j = i+1; j < n; j++)
+			for (int j = i+1; j < toIndex; j++)
 				if (a[j] < a[min_idx])
 					min_idx = j;
 
@@ -38,12 +34,10 @@ public class SelectionSorts implements Sorts {
 		}
 	}
 
-	@Override
-	public void sort(int[] a) {
-		int n = a.length;
-		for (int i = 0; i < n-1; i++) {
+	public static void selectSort(int[] a, int fromIndex, int toIndex) {
+		for (int i = fromIndex; i < toIndex-1; i++) {
 			int min_idx = i;
-			for (int j = i+1; j < n; j++)
+			for (int j = i+1; j < toIndex; j++)
 				if (a[j] < a[min_idx])
 					min_idx = j;
 
@@ -53,12 +47,10 @@ public class SelectionSorts implements Sorts {
 		}
 	}
 
-	@Override
-	public void sort(long[] a) {
-		int n = a.length;
-		for (int i = 0; i < n-1; i++) {
+	public static void selectSort(long[] a, int fromIndex, int toIndex) {
+		for (int i = fromIndex; i < toIndex-1; i++) {
 			int min_idx = i;
-			for (int j = i+1; j < n; j++)
+			for (int j = i+1; j < toIndex; j++)
 				if (a[j] < a[min_idx])
 					min_idx = j;
 
@@ -68,12 +60,10 @@ public class SelectionSorts implements Sorts {
 		}
 	}
 
-	@Override
-	public void sort(float[] a) {
-		int n = a.length;
-		for (int i = 0; i < n-1; i++) {
+	public static void selectSort(float[] a, int fromIndex, int toIndex) {
+		for (int i = fromIndex; i < toIndex-1; i++) {
 			int min_idx = i;
-			for (int j = i+1; j < n; j++)
+			for (int j = i+1; j < toIndex; j++)
 				if (a[j] < a[min_idx])
 					min_idx = j;
 
@@ -83,12 +73,10 @@ public class SelectionSorts implements Sorts {
 		}
 	}
 
-	@Override
-	public void sort(double[] a) {
-		int n = a.length;
-		for (int i = 0; i < n-1; i++) {
+	public static void selectSort(double[] a, int fromIndex, int toIndex) {
+		for (int i = fromIndex; i < toIndex-1; i++) {
 			int min_idx = i;
-			for (int j = i+1; j < n; j++)
+			for (int j = i+1; j < toIndex; j++)
 				if (a[j] < a[min_idx])
 					min_idx = j;
 
@@ -98,12 +86,10 @@ public class SelectionSorts implements Sorts {
 		}
 	}
 
-	@Override
-	public void sort(char[] a) {
-		int n = a.length;
-		for (int i = 0; i < n-1; i++) {
+	public static void selectSort(char[] a, int fromIndex, int toIndex) {
+		for (int i = fromIndex; i < toIndex-1; i++) {
 			int min_idx = i;
-			for (int j = i+1; j < n; j++)
+			for (int j = i+1; j < toIndex; j++)
 				if (a[j] < a[min_idx])
 					min_idx = j;
 
@@ -113,12 +99,10 @@ public class SelectionSorts implements Sorts {
 		}
 	}
 
-	@Override
-	public void sort(Object[] a) {
-		int n = a.length;
-		for (int i = 0; i < n-1; i++) {
+	public static void selectSort(Object[] a, int fromIndex, int toIndex) {
+		for (int i = fromIndex; i < toIndex-1; i++) {
 			int min_idx = i;
-			for (int j = i+1; j < n; j++)
+			for (int j = i+1; j < toIndex; j++)
 				if (((Comparable)a[j]).compareTo(a[min_idx]) < 0)
 					min_idx = j;
 
@@ -128,12 +112,10 @@ public class SelectionSorts implements Sorts {
 		}
 	}
 
-	@Override
-	public <T> void sort(T[] a, Comparator<? super T> c) {
-		int n = a.length;
-		for (int i = 0; i < n-1; i++) {
+	public <T> void selectSort(T[] a, int fromIndex, int toIndex, Comparator<? super T> c) {
+		for (int i = fromIndex; i < toIndex-1; i++) {
 			int min_idx = i;
-			for (int j = i+1; j < n; j++)
+			for (int j = i+1; j < toIndex; j++)
 				if (c.compare(a[j], a[min_idx]) < 0)
 					min_idx = j;
 
@@ -141,5 +123,50 @@ public class SelectionSorts implements Sorts {
 			a[min_idx] = a[i];
 			a[i] = temp;
 		}
+	}
+
+	@Override
+	public void sort(byte[] a, int fromIndex, int toIndex) {
+		selectSort(a, fromIndex, toIndex);
+	}
+
+	@Override
+	public void sort(short[] a, int fromIndex, int toIndex) {
+		selectSort(a, fromIndex, toIndex);
+	}
+
+	@Override
+	public void sort(int[] a, int fromIndex, int toIndex) {
+		selectSort(a, fromIndex, toIndex);
+	}
+
+	@Override
+	public void sort(long[] a, int fromIndex, int toIndex) {
+		selectSort(a, fromIndex, toIndex);
+	}
+
+	@Override
+	public void sort(float[] a, int fromIndex, int toIndex) {
+		selectSort(a, fromIndex, toIndex);
+	}
+
+	@Override
+	public void sort(double[] a, int fromIndex, int toIndex) {
+		selectSort(a, fromIndex, toIndex);
+	}
+
+	@Override
+	public void sort(char[] a, int fromIndex, int toIndex) {
+		selectSort(a, fromIndex, toIndex);
+	}
+
+	@Override
+	public void sort(Object[] a, int fromIndex, int toIndex) {
+		selectSort(a, fromIndex, toIndex);
+	}
+
+	@Override
+	public <T> void sort(T[] a, int fromIndex, int toIndex, Comparator<? super T> c) {
+		selectSort(a, fromIndex, toIndex, c);
 	}
 }
