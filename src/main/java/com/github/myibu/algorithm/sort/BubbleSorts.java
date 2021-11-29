@@ -104,7 +104,7 @@ public class BubbleSorts extends AbstractSorts {
 		}
 	}
 
-	public <T> void bubbleSort(T[] a, int fromIndex, int toIndex, Comparator<? super T> c) {
+	public static <T> void bubbleSort(T[] a, int fromIndex, int toIndex, Comparator<? super T> c) {
 		for (int i = 0; i < toIndex-fromIndex; i++) {
 			for (int j = fromIndex; j < toIndex - i - 1; j++) {
 				if (c.compare(a[j], a[j+1]) > 0) {

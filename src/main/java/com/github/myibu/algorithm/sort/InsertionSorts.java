@@ -104,7 +104,7 @@ public class InsertionSorts extends AbstractSorts {
 		}
 	}
 
-	public <T> void insertSort(T[] a, int fromIndex, int toIndex, Comparator<? super T> c) {
+	public static <T> void insertSort(T[] a, int fromIndex, int toIndex, Comparator<? super T> c) {
 		for (int i = fromIndex; i < toIndex; ++i) {
 			T key = a[i];
 			int j = i - 1;

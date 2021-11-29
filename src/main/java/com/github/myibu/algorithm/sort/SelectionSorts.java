@@ -112,7 +112,7 @@ public class SelectionSorts extends AbstractSorts {
 		}
 	}
 
-	public <T> void selectSort(T[] a, int fromIndex, int toIndex, Comparator<? super T> c) {
+	public static <T> void selectSort(T[] a, int fromIndex, int toIndex, Comparator<? super T> c) {
 		for (int i = fromIndex; i < toIndex-1; i++) {
 			int min_idx = i;
 			for (int j = i+1; j < toIndex; j++)

@@ -326,17 +326,17 @@ public class AlgorithmTest {
         Assert.assertArrayEquals(SORTED_A_GENERIC, a_generic);
     }
 
-//    @Test
-//    public void testTimSorts() {
-//        int[] a_byte = new int[]{2, 5, 6, 1, 8, 8, 9, 7, 7, 3, 4};
-//        String[] a_object = new String[]{"2", "5", "6", "1", "8", "8", "9", "7", "7", "3", "4"};
-//        String[] a_generic = new String[]{"bb", "ba", "a", "aab", "b"};
-//        Sorts sorts = new TimSorts();
-//        sorts.sort(a_byte, 4, a_byte.length);
-//        sorts.sort(a_object, 2, a_object.length - 2);
-//        sorts.sort(a_generic, 1, a_generic.length, Comparator.comparingInt(String::length));
-//        Assert.assertArrayEquals(SORTED_A_BYTE, a_byte);
-//        Assert.assertArrayEquals(SORTED_A_OBJECT, a_object);
-//        Assert.assertArrayEquals(SORTED_A_GENERIC, a_generic);
-//    }
+    @Test
+    public void testTimSorts() {
+        int[] a_byte = new int[]{2, 5, 6, 1, 8, 8, 9, 7, 7, 3, 4};
+        String[] a_object = new String[]{"2", "5", "6", "1", "8", "8", "9", "7", "7", "3", "4"};
+        String[] a_generic = new String[]{"bb", "ba", "a", "aab", "b"};
+        Sorts sorts = new TimSorts();
+        sorts.sort(a_byte, 4, a_byte.length);
+        sorts.sort(a_object, 2, a_object.length - 2);
+        sorts.sort(a_generic, 1, a_generic.length, Comparator.comparingInt(String::length));
+        Assert.assertArrayEquals(SORTED_A_BYTE, a_byte);
+        Assert.assertArrayEquals(SORTED_A_OBJECT, a_object);
+        Assert.assertArrayEquals(SORTED_A_GENERIC, a_generic);
+    }
 }
