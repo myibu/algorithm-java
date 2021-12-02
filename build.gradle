@@ -26,7 +26,7 @@ tasks.withType(JavaCompile) { options.encoding = "UTF-8" }
 
 group = 'com.github.myibu'
 archivesBaseName = "algorithm-java"
-version = "1.0.0d"
+version = "1.0.0e"
 
 repositories {
     mavenCentral()

@@ -97,6 +97,9 @@ public class HoffmanEncoder implements Encoder {
      * 4. Code assignment:
      * Traverse the tree from the root to each leaf node,
      * assign 0 to the top branch and 1 to the bottom branch
+     * @param in_data in_data
+     * @param in_len in_len
+     * @return Bits
      */
     public Bits encode(byte[] in_data, int in_len) {
         List<Symbol> probs = new ArrayList<>();
