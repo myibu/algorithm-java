@@ -36,6 +36,16 @@ public class Bits implements Iterable<Bit>, Cloneable {
         return bits;
     }
 
+    public static Bits reverse(Bits x) {
+        Bits bits = new Bits();
+        bits.expand(x.used);
+        for (int i = 0; i < x.used; i++) {
+            bits.table[i] = x.table[x.used-i-1];
+        }
+        bits.used += x.used;
+        return bits;
+    }
+
     public static Bits and(Bits x, Bits y) {
         Bits x1, y1;
         Bits bits = new Bits();
