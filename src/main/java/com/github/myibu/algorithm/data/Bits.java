@@ -3,6 +3,7 @@ package com.github.myibu.algorithm.data;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -546,8 +547,19 @@ public class Bits implements Iterable<Bit>, Cloneable {
                     ") > toIndex(" + toIndex + ")");
     }
 
+    @Deprecated
     public Bit[] table(){
-        return this.table;
+        return toArray();
+    }
+
+    public Bit[] toArray() {
+        return Arrays.copyOf(table, used);
+    }
+
+    public List<Bit> toList() {
+        Bit[] usedTable = new Bit[used];
+        System.arraycopy(table, 0, usedTable, 0, used);
+        return Arrays.asList(usedTable);
     }
 
     @Override
@@ -593,6 +605,14 @@ public class Bits implements Iterable<Bit>, Cloneable {
         return table[index];
     }
 
+    public Bit set(int index, Bit bit) {
+        if (index < 0 || index >= used)
+            throw new IndexOutOfBoundsException();
+        Bit oldValue = table[index];
+        table[index] = bit;
+        return oldValue;
+    }
+
     @Override
     public Bits clone() {
         Bits dest = null;
@@ -617,5 +637,78 @@ public class Bits implements Iterable<Bit>, Cloneable {
     @Override
     public int hashCode() {
         return Arrays.hashCode(table);
+    }
+
+    public static void copy(Bits src, int srcPos, Bits dest, int destPos, int length) {
+        System.arraycopy(src.table, srcPos, dest.table, destPos, length);
+    }
+
+    public static class Encoder {
+        public static Bits encodeIntValue(int value) {
+            Bits bits = new Bits();
+            int div = 0;
+            while ((div = (value / 2)) != 0) {
+                int left = value - div * 2;
+                bits.append(left == 0 ? Bit.ZERO : Bit.ONE);
+                value = div;
+            }
+            bits.append(value == 1 ? Bit.ONE : Bit.ZERO);
+            return Bits.reverse(bits);
+        }
+
+        public static Bits encodeDecimalValue(double value) {
+            Bits bits = new Bits();
+            while (!firstNumAfterDotIsZero(value)) {
+                int left = (int)(value * 2);
+                bits.append(left == 0 ? Bit.ZERO : Bit.ONE);
+                value = value * 2 - left;
+            }
+            return bits;
+        }
+
+        private static boolean firstNumAfterDotIsZero(double value) {
+            String doubleValue = "" + value;
+            int dotIndex = -1;
+            if ((dotIndex = doubleValue.indexOf("."))  != -1) {
+                if (dotIndex + 1 < doubleValue.length()) {
+                    return doubleValue.charAt(dotIndex+1) == '0';
+                }
+            }
+            return false;
+        }
+
+        public static Bits encodeFloatValue(float value) {
+            int intValue = (int)value;
+            float dotValue = value - intValue;
+            Bits bits1 = encodeIntValue(intValue);
+            Bits bits2 = encodeDecimalValue(dotValue);
+            Bits S = value < 0 ? Bits.ofOne() : Bits.ofZero();
+            Bits E = Bits.ofZero(8);
+            Bits eValue = encodeIntValue(bits1.length() - 1 + 127);
+            Bits.copy(eValue, 0, E, 0,8);
+            Bits M = Bits.ofZero(23);
+            Bits.copy(bits1, 1, M, 0, bits1.length() - 1);
+            Bits.copy(bits2, 0, M, bits1.length() - 1, bits2.length());
+            return S.append(E).append(M);
+        }
+
+        public static Bits encodeDoubleValue(double value) {
+            int intValue = (int)value;
+            double dotValue = value - intValue;
+            Bits bits1 = encodeIntValue(intValue);
+            Bits bits2 = encodeDecimalValue(dotValue);
+            Bits S = value < 0 ? Bits.ofOne() : Bits.ofZero();
+            Bits E = Bits.ofZero(11);
+            Bits eValue = encodeIntValue(bits1.length() - 1 + 1023);
+            Bits.copy(eValue, 0, E, 0,11);
+            Bits M = Bits.ofZero(52);
+            Bits.copy(bits1, 1, M, 0, bits1.length() - 1);
+            Bits.copy(bits2, 0, M, bits1.length() - 1, bits2.length());
+            return S.append(E).append(M);
+        }
+
+        public static Bits encodeStringValue(String value) {
+            return Bits.ofByte(value.getBytes(StandardCharsets.UTF_8));
+        }
     }
 }
