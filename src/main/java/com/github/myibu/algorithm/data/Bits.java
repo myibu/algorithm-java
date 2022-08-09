@@ -273,6 +273,7 @@ public class Bits implements Iterable<Bit>, Cloneable {
     }
 
     public static Bits ofByte(byte[] val) {
+        if (val == null || val.length == 0) return new Bits();
         int i = 0;
         Bits first = ofByte(val[i++]);
         for (; i < val.length; i++) {
@@ -300,6 +301,7 @@ public class Bits implements Iterable<Bit>, Cloneable {
     }
 
     public static Bits ofShort(short[] val) {
+        if (val == null || val.length == 0) return new Bits();
         int i = 0;
         Bits first = ofShort(val[i++]);
         for (; i < val.length; i++) {
@@ -327,6 +329,7 @@ public class Bits implements Iterable<Bit>, Cloneable {
     }
 
     public static Bits ofInt(int[] val) {
+        if (val == null || val.length == 0) return new Bits();
         int i = 0;
         Bits first = ofInt(val[i++]);
         for (; i < val.length; i++) {
@@ -406,6 +409,7 @@ public class Bits implements Iterable<Bit>, Cloneable {
     }
 
     public static Bits ofLong(long[] val) {
+        if (val == null || val.length == 0) return new Bits();
         int i = 0;
         Bits first = ofLong(val[i++]);
         for (; i < val.length; i++) {
