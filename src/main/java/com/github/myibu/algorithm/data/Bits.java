@@ -1,5 +1,6 @@
 package com.github.myibu.algorithm.data;
 
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -651,20 +652,22 @@ public class Bits implements Iterable<Bit>, Cloneable {
 
     public static class Encoder {
         public static Bits encodeIntValue(int value) {
-            Bits bits = new Bits();
-            int div = 0;
-            while ((div = (value / 2)) != 0) {
-                int left = value - div * 2;
-                bits.append(left == 0 ? Bit.ZERO : Bit.ONE);
-                value = div;
-            }
-            bits.append(value == 1 ? Bit.ONE : Bit.ZERO);
-            return Bits.reverse(bits);
+//            int value = Math.abs(value);
+//            Bits bits = new Bits();
+//            int div = 0;
+//            while ((div = (value / 2)) != 0) {
+//                int left = value - div * 2;
+//                bits.append(left == 0 ? Bit.ZERO : Bit.ONE);
+//                value = div;
+//            }
+//            bits.append(value == 1 ? Bit.ONE : Bit.ZERO);
+//            return Bits.reverse(bits);
+            return Bits.ofString(Integer.toBinaryString(value));
         }
 
         public static Bits encodeDecimalValue(double value) {
             Bits bits = new Bits();
-            while (!firstNumAfterDotIsZero(value)) {
+            while (value-(int)value != 0) {
                 int left = (int)(value * 2);
                 bits.append(left == 0 ? Bit.ZERO : Bit.ONE);
                 value = value * 2 - left;
@@ -672,44 +675,55 @@ public class Bits implements Iterable<Bit>, Cloneable {
             return bits;
         }
 
-        private static boolean firstNumAfterDotIsZero(double value) {
-            String doubleValue = "" + value;
-            int dotIndex = -1;
-            if ((dotIndex = doubleValue.indexOf("."))  != -1) {
-                if (dotIndex + 1 < doubleValue.length()) {
-                    return doubleValue.charAt(dotIndex+1) == '0';
-                }
-            }
-            return false;
-        }
-
         public static Bits encodeFloatValue(float value) {
             int intValue = (int)value;
-            float dotValue = value - intValue;
-            Bits bits1 = encodeIntValue(intValue);
+            float dotValue = BigDecimal.valueOf(value).subtract(BigDecimal.valueOf(intValue)).floatValue();
+            Bits bits1 = encodeIntValue(Math.abs(intValue));
             Bits bits2 = encodeDecimalValue(dotValue);
+            int currentDotIndex = bits1.length();
+            int firstDotIndex = -1;
+            Bits bits = bits1.append(bits2);
+            for (int i = 0; i < bits.length(); i++) {
+                if (Bit.ONE == bits.get(i)) {
+                    firstDotIndex = i;
+                    break;
+                }
+            }
+            if (firstDotIndex == -1) {
+                return Bits.ofString("00000000000000000000000000000000");
+            }
             Bits S = value < 0 ? Bits.ofOne() : Bits.ofZero();
             Bits E = Bits.ofZero(8);
-            Bits eValue = encodeIntValue(bits1.length() - 1 + 127);
-            Bits.copy(eValue, 0, E, 0,8);
+            Bits eValue = encodeIntValue(currentDotIndex - firstDotIndex -1 + 127);
+            Bits.copy(eValue, 0, E, Math.max(0, 8 - eValue.length()), Math.min(eValue.length(), 8));
             Bits M = Bits.ofZero(23);
-            Bits.copy(bits1, 1, M, 0, bits1.length() - 1);
-            Bits.copy(bits2, 0, M, bits1.length() - 1, bits2.length());
+            Bits.copy(bits, firstDotIndex+1, M, 0, Math.min(bits.length() - firstDotIndex - 1, 23));
             return S.append(E).append(M);
         }
 
         public static Bits encodeDoubleValue(double value) {
             int intValue = (int)value;
-            double dotValue = value - intValue;
-            Bits bits1 = encodeIntValue(intValue);
+            double dotValue = BigDecimal.valueOf(value).subtract(BigDecimal.valueOf(intValue)).doubleValue();
+            Bits bits1 = encodeIntValue(Math.abs(intValue));
             Bits bits2 = encodeDecimalValue(dotValue);
+            int currentDotIndex = bits1.length();
+            int firstDotIndex = -1;
+            Bits bits = bits1.append(bits2);
+            for (int i = 0; i < bits.length(); i++) {
+                if (Bit.ONE == bits.get(i)) {
+                    firstDotIndex = i;
+                    break;
+                }
+            }
+            if (firstDotIndex == -1) {
+                return Bits.ofString("0000000000000000000000000000000000000000000000000000000000000000");
+            }
             Bits S = value < 0 ? Bits.ofOne() : Bits.ofZero();
             Bits E = Bits.ofZero(11);
-            Bits eValue = encodeIntValue(bits1.length() - 1 + 1023);
-            Bits.copy(eValue, 0, E, 0,11);
+            Bits eValue = encodeIntValue(currentDotIndex - firstDotIndex -1 + 1023);
+            Bits.copy(eValue, 0, E, Math.max(0, 11 - eValue.length()), Math.min(eValue.length(), 11));
             Bits M = Bits.ofZero(52);
-            Bits.copy(bits1, 1, M, 0, bits1.length() - 1);
-            Bits.copy(bits2, 0, M, bits1.length() - 1, bits2.length());
+            Bits.copy(bits, firstDotIndex+1, M, 0, Math.min(bits.length() - firstDotIndex - 1, 52));
             return S.append(E).append(M);
         }
 

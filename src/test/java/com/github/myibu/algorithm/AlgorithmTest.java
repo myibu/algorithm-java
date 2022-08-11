@@ -339,4 +339,21 @@ public class AlgorithmTest {
         Assert.assertArrayEquals(SORTED_A_OBJECT, a_object);
         Assert.assertArrayEquals(SORTED_A_GENERIC, a_generic);
     }
+
+    @Test
+    public void testBitsEncoder() {
+        Assert.assertEquals(Bits.ofString("10"), Bits.Encoder.encodeIntValue(2));
+        Assert.assertEquals(Bits.ofString("11111111111111111111111111111110"), Bits.Encoder.encodeIntValue(-2));
+
+        Assert.assertEquals(Bits.ofString("00111111001000000000000000000000"), Bits.Encoder.encodeFloatValue(0.625f));
+        Assert.assertEquals(Bits.ofString("10111111001000000000000000000000"), Bits.Encoder.encodeFloatValue(-0.625f));
+        Assert.assertEquals(Bits.ofString("01000001100011010000000000000000"), Bits.Encoder.encodeFloatValue(17.625f));
+        Assert.assertEquals(Bits.ofString("01000000110000000000000000000000"), Bits.Encoder.encodeFloatValue(6.0f));
+        Assert.assertEquals(Bits.ofString("00000000000000000000000000000000"), Bits.Encoder.encodeFloatValue(0.0f));
+
+        Assert.assertEquals(Bits.ofString("0100000000000010000000000000000000000000000000000000000000000000"), Bits.Encoder.encodeDoubleValue(2.25));
+        Assert.assertEquals(Bits.ofString("0011111111010110110010001011010000111001010110000001000001100010"), Bits.Encoder.encodeDoubleValue(0.356));
+        Assert.assertEquals(Bits.ofString("0100000000101001100100111111011111001110110110010001011010000111"), Bits.Encoder.encodeDoubleValue(12.789));
+        Assert.assertEquals(Bits.ofString("1100000000101001100100111111011111001110110110010001011010000111"), Bits.Encoder.encodeDoubleValue(-12.789));
+    }
 }
