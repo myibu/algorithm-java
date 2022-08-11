@@ -215,15 +215,17 @@ public class Bits implements Iterable<Bit>, Cloneable {
         }
         long res = 0;
         for (int i = bits.used-1, j = 0; i >= 0; i--, j++) {
-            res = res + table[i].value() * pow(2, j);
+            res = res + table[i].value() * (int)pow(2, j);
         }
         return res;
     }
 
-    private static int pow(int m, int n){
-        int res = 1;
-        for (int i = 0; i < n; i++) {
-            res *= m;
+    private static double pow(int m, int n){
+        if (m == 0) return 0;
+        double md = (n >= 0) ? m : 1.0 / m;
+        double res = 1;
+        for (int i = 0; i < Math.abs(n); i++) {
+            res *= md;
         }
         return res;
     }
@@ -713,6 +715,44 @@ public class Bits implements Iterable<Bit>, Cloneable {
 
         public static Bits encodeStringValue(String value) {
             return Bits.ofByte(value.getBytes(StandardCharsets.UTF_8));
+        }
+    }
+
+    public static class Decoder {
+        public static int decodeIntValue(Bits value) {
+            int res = 0;
+            for (int i = value.length() - 1, j = 0; i >= 0; i--, j++) {
+                res = res + value.get(i).value() * (int)pow(2, j);
+            }
+            return res;
+        }
+
+        public static double decodeDecimalValue(Bits value) {
+            double res = 0;
+            for (int i = 0, j = 0; i < value.length(); i++, j++) {
+                res = res + value.get(i).value() * pow(2, -(j+1));
+            }
+            return res;
+        }
+
+        public static float decodeFloatValue(Bits value) {
+            if (value.length() != 32) throw new IllegalArgumentException("float value must be 32 bits");
+            Bits bits = value.clone();
+            int S = bits.get(0).value();
+            int E = bits.subBits(1, 9).toInt() - 127;
+            Bits M = Bits.ofOne().append(bits.subBits(9, 32));
+            float floatValue = (float) (decodeIntValue(M.subBits(0, 1 + E)) + decodeDecimalValue(M.subBits(1 + E, M.length())));
+            return (S == 0 ? 1 : -1) * floatValue;
+        }
+
+        public static double decodeDoubleValue(Bits value) {
+            if (value.length() != 64) throw new IllegalArgumentException("double value must be 64 bits");
+            Bits bits = value.clone();
+            int S = bits.get(0).value();
+            int E = bits.subBits(1, 12).toInt() - 1023;
+            Bits M = Bits.ofOne().append(bits.subBits(12, 64));
+            double doubleValue = decodeIntValue(M.subBits(0, 1 + E)) + decodeDecimalValue(M.subBits(1 + E, M.length()));
+            return (S == 0 ? 1 : -1) * doubleValue;
         }
     }
 }

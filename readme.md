@@ -57,7 +57,7 @@ Reference to: [HoffmanAndGolombCoding.pdf](./docs/HoffmanAndGolombCoding.pdf)
 <dependency>
   <groupId>com.github.myibu</groupId>
   <artifactId>algorithm-java</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 </dependency>
 ```
 
