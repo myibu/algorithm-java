@@ -751,21 +751,23 @@ public class Bits implements Iterable<Bit>, Cloneable {
 
         public static float decodeFloatValue(Bits value) {
             if (value.length() != 32) throw new IllegalArgumentException("float value must be 32 bits");
+            if (Bits.ofString("00000000000000000000000000000000").equals(value)) return 0.0f;
             Bits bits = value.clone();
             int S = bits.get(0).value();
             int E = bits.subBits(1, 9).toInt() - 127;
             Bits M = Bits.ofOne().append(bits.subBits(9, 32));
-            float floatValue = (float) (decodeIntValue(M.subBits(0, 1 + E)) + decodeDecimalValue(M.subBits(1 + E, M.length())));
+            float floatValue =  (float)((1 + decodeDecimalValue(M.subBits(1, M.length())))* pow(2, E));
             return (S == 0 ? 1 : -1) * floatValue;
         }
 
         public static double decodeDoubleValue(Bits value) {
             if (value.length() != 64) throw new IllegalArgumentException("double value must be 64 bits");
+            if (Bits.ofString("0000000000000000000000000000000000000000000000000000000000000000").equals(value)) return 0.0;
             Bits bits = value.clone();
             int S = bits.get(0).value();
             int E = bits.subBits(1, 12).toInt() - 1023;
             Bits M = Bits.ofOne().append(bits.subBits(12, 64));
-            double doubleValue = decodeIntValue(M.subBits(0, 1 + E)) + decodeDecimalValue(M.subBits(1 + E, M.length()));
+            double doubleValue =  (1 + decodeDecimalValue(M.subBits(1, M.length())))* pow(2, E);
             return (S == 0 ? 1 : -1) * doubleValue;
         }
     }

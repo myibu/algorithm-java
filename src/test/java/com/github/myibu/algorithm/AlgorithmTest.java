@@ -350,10 +350,23 @@ public class AlgorithmTest {
         Assert.assertEquals(Bits.ofString("01000001100011010000000000000000"), Bits.Encoder.encodeFloatValue(17.625f));
         Assert.assertEquals(Bits.ofString("01000000110000000000000000000000"), Bits.Encoder.encodeFloatValue(6.0f));
         Assert.assertEquals(Bits.ofString("00000000000000000000000000000000"), Bits.Encoder.encodeFloatValue(0.0f));
+        Assert.assertEquals(Bits.ofString("10111111011111111111100101110010"), Bits.Encoder.encodeFloatValue(-0.9999f));
 
         Assert.assertEquals(Bits.ofString("0100000000000010000000000000000000000000000000000000000000000000"), Bits.Encoder.encodeDoubleValue(2.25));
         Assert.assertEquals(Bits.ofString("0011111111010110110010001011010000111001010110000001000001100010"), Bits.Encoder.encodeDoubleValue(0.356));
         Assert.assertEquals(Bits.ofString("0100000000101001100100111111011111001110110110010001011010000111"), Bits.Encoder.encodeDoubleValue(12.789));
         Assert.assertEquals(Bits.ofString("1100000000101001100100111111011111001110110110010001011010000111"), Bits.Encoder.encodeDoubleValue(-12.789));
+        Assert.assertEquals(Bits.ofString("1100000011000101101100111010101010101010101010101010101010101011"), Bits.Encoder.encodeDoubleValue(-11111.3333333333333333));
+
+        Assert.assertEquals(0.625f, Bits.Decoder.decodeFloatValue(Bits.ofString("00111111001000000000000000000000")), 0);
+        Assert.assertEquals(0.0f, Bits.Decoder.decodeFloatValue(Bits.ofString("00000000000000000000000000000000")), 0);
+        Assert.assertEquals(0.4f, Bits.Decoder.decodeFloatValue(Bits.ofString("00111110110011001100110011001101")), 0);
+        Assert.assertEquals(-0.9999f, Bits.Decoder.decodeFloatValue(Bits.ofString("10111111011111111111100101110010")), 0);
+
+        Assert.assertEquals(2.25, Bits.Decoder.decodeDoubleValue(Bits.ofString("0100000000000010000000000000000000000000000000000000000000000000")), 0);
+        Assert.assertEquals(0.356, Bits.Decoder.decodeDoubleValue(Bits.ofString("0011111111010110110010001011010000111001010110000001000001100010")), 0);
+        Assert.assertEquals(12.789, Bits.Decoder.decodeDoubleValue(Bits.ofString("0100000000101001100100111111011111001110110110010001011010000111")), 0);
+        Assert.assertEquals(-12.789, Bits.Decoder.decodeDoubleValue(Bits.ofString("1100000000101001100100111111011111001110110110010001011010000111")), 0);
+        Assert.assertEquals(-11111.3333333333333333, Bits.Decoder.decodeDoubleValue(Bits.ofString("1100000011000101101100111010101010101010101010101010101010101011")), 0);
     }
 }
