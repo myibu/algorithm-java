@@ -762,11 +762,11 @@ public class Bits implements Iterable<Bit>, Cloneable {
     }
 
     public static class Decoder {
-        public static int encodeZigzagValue(int value) {
+        public static int decodeZigzagValue(int value) {
             return (value >> 1) ^ -(value & 1);
         }
 
-        public static long encodeZigzagValue(long value) {
+        public static long decodeZigzagValue(long value) {
             return (value >> 1) ^ -(value & 1);
         }
 

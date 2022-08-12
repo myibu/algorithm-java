@@ -376,7 +376,7 @@ public class AlgorithmTest {
 
         Assert.assertEquals(3, Bits.Encoder.encodeZigzagValue(-2));
         Assert.assertEquals(0, Bits.Encoder.encodeZigzagValue(0));
-        Assert.assertEquals(-2, Bits.Decoder.encodeZigzagValue(3));
-        Assert.assertEquals(-1, Bits.Decoder.encodeZigzagValue(1));
+        Assert.assertEquals(-2, Bits.Decoder.decodeZigzagValue(3));
+        Assert.assertEquals(-1, Bits.Decoder.decodeZigzagValue(1));
     }
 }
