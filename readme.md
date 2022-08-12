@@ -57,7 +57,7 @@ Reference to: [HoffmanAndGolombCoding.pdf](./docs/HoffmanAndGolombCoding.pdf)
 <dependency>
   <groupId>com.github.myibu</groupId>
   <artifactId>algorithm-java</artifactId>
-  <version>1.0.4</version>
+  <version>1.0.5</version>
 </dependency>
 ```
 
@@ -66,3 +66,6 @@ Reference to: [HoffmanAndGolombCoding.pdf](./docs/HoffmanAndGolombCoding.pdf)
 SHA256 sha256 = new SHA256();
 byte[] bs = sha256.encode("abc".getBytes("utf-8"));
 ```
+## Change Notes
+### 1.0.5
+Add more useful methods in Bits

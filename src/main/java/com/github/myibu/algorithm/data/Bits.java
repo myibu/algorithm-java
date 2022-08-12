@@ -170,7 +170,7 @@ public class Bits implements Iterable<Bit>, Cloneable {
     }
 
     public byte toByte() {
-        return (byte)toLong();
+        return (byte)toLong(8);
     }
 
     public short[] toShortArray() {
@@ -183,7 +183,7 @@ public class Bits implements Iterable<Bit>, Cloneable {
     }
 
     public short toShort() {
-        return (short)toLong();
+        return (short)toLong(16);
     }
 
     public int[] toIntArray() {
@@ -196,7 +196,7 @@ public class Bits implements Iterable<Bit>, Cloneable {
     }
 
     public int toInt() {
-        return (int)toLong();
+        return (int)toLong(32);
     }
 
     public long[] toLongArray() {
@@ -208,17 +208,44 @@ public class Bits implements Iterable<Bit>, Cloneable {
         return data;
     }
 
-    public long toLong() {
-        Bits bits = this;
-        boolean isPositive = table[0] == Bit.ZERO;
+    public Bits plus(Bit bit) {
+        Bits bits = this.clone();
+        Bit next = bit;
+        for (int i = bits.table.length-1; i >= 0; i--) {
+            if (bits.table[i] == next) {
+                if (bits.table[i] == Bit.ONE) {
+                    bits.table[i] = Bit.ZERO;
+                    next = Bit.ONE;
+                } else {
+                    next = Bit.ZERO;
+                }
+            } else {
+                bits.table[i] = Bit.ONE;
+                break;
+            }
+        }
+        return bits;
+    }
+
+    private long toLong(int maxBitStoreSize) {
+        Bits bits = ofZero(maxBitStoreSize);
+        copy(this, Math.max(0, this.used - maxBitStoreSize),
+                bits, maxBitStoreSize - Math.min(this.used, maxBitStoreSize),
+                Math.min(this.used, maxBitStoreSize));
+
+        boolean isPositive = bits.table[0] == Bit.ZERO;
         if (!isPositive) {
-            bits = inverse(this);
+            bits = inverse(bits).plus(Bit.ONE);
         }
         long res = 0;
         for (int i = bits.used-1, j = 0; i >= 0; i--, j++) {
-            res = res + table[i].value() * (int)pow(2, j);
+            res = res + (long) bits.table[i].value() * (int)pow(2, j);
         }
-        return res;
+        return isPositive ? res : -res;
+    }
+
+    public long toLong() {
+        return toLong(64);
     }
 
     private static double pow(int m, int n){
@@ -651,18 +678,20 @@ public class Bits implements Iterable<Bit>, Cloneable {
     }
 
     public static class Encoder {
+        public static int encodeZigzagValue(int value) {
+            return  (value << 1) ^ (value >> 31);
+        }
+
+        public static long encodeZigzagValue(long value) {
+            return  (value << 1) ^ (value >> 63);
+        }
+
         public static Bits encodeIntValue(int value) {
-//            int value = Math.abs(value);
-//            Bits bits = new Bits();
-//            int div = 0;
-//            while ((div = (value / 2)) != 0) {
-//                int left = value - div * 2;
-//                bits.append(left == 0 ? Bit.ZERO : Bit.ONE);
-//                value = div;
-//            }
-//            bits.append(value == 1 ? Bit.ONE : Bit.ZERO);
-//            return Bits.reverse(bits);
             return Bits.ofString(Integer.toBinaryString(value));
+        }
+
+        public static Bits encodeLongValue(long value) {
+            return Bits.ofString(Long.toBinaryString(value));
         }
 
         public static Bits encodeDecimalValue(double value) {
@@ -733,6 +762,14 @@ public class Bits implements Iterable<Bit>, Cloneable {
     }
 
     public static class Decoder {
+        public static int encodeZigzagValue(int value) {
+            return (value >> 1) ^ -(value & 1);
+        }
+
+        public static long encodeZigzagValue(long value) {
+            return (value >> 1) ^ -(value & 1);
+        }
+
         public static int decodeIntValue(Bits value) {
             int res = 0;
             for (int i = value.length() - 1, j = 0; i >= 0; i--, j++) {

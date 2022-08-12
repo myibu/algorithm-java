@@ -79,6 +79,11 @@ public class AlgorithmTest {
         Assert.assertEquals(Bits.or(bits, Bits.ofInt(0xFFFFFFe6)).toInt(), 0xFFFFFFFF);
         Assert.assertEquals(Bits.xor(bits, Bits.ofInt(25)).toInt(), 0x00000000);
         Assert.assertEquals(Bits.inverse(bits).toInt(), 0xFFFFFFe6);
+        Assert.assertEquals(150, Bits.ofString("10010110").toInt());
+        Assert.assertEquals(-150, Bits.ofString("11111111111111111111111101101010").toInt());
+        Assert.assertEquals(-1, Bits.ofString("11111111111111111111111111111111").toInt());
+        Assert.assertEquals(-55, Bits.ofString("11111111111111111111111111001001").toInt());
+        Assert.assertEquals(-2, Bits.ofString("0011111111111111111111111111111110").toInt());
     }
 
     @Test
@@ -368,5 +373,10 @@ public class AlgorithmTest {
         Assert.assertEquals(12.789, Bits.Decoder.decodeDoubleValue(Bits.ofString("0100000000101001100100111111011111001110110110010001011010000111")), 0);
         Assert.assertEquals(-12.789, Bits.Decoder.decodeDoubleValue(Bits.ofString("1100000000101001100100111111011111001110110110010001011010000111")), 0);
         Assert.assertEquals(-11111.3333333333333333, Bits.Decoder.decodeDoubleValue(Bits.ofString("1100000011000101101100111010101010101010101010101010101010101011")), 0);
+
+        Assert.assertEquals(3, Bits.Encoder.encodeZigzagValue(-2));
+        Assert.assertEquals(0, Bits.Encoder.encodeZigzagValue(0));
+        Assert.assertEquals(-2, Bits.Decoder.encodeZigzagValue(3));
+        Assert.assertEquals(-1, Bits.Decoder.encodeZigzagValue(1));
     }
 }
