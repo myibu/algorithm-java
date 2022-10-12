@@ -9,6 +9,7 @@ import com.github.myibu.algorithm.filter.*;
 import com.github.myibu.algorithm.hash.MurmurHash2;
 import com.github.myibu.algorithm.hash.SHA256;
 import com.github.myibu.algorithm.hash.SipHash;
+import com.github.myibu.algorithm.id.SnowflakeIdWorker;
 import com.github.myibu.algorithm.random.LinearCongruentialRandom;
 import com.github.myibu.algorithm.random.MersenneTwisterRandom;
 import com.github.myibu.algorithm.random.Random;
@@ -378,5 +379,14 @@ public class AlgorithmTest {
         Assert.assertEquals(0, Bits.Encoder.encodeZigzagValue(0));
         Assert.assertEquals(-2, Bits.Decoder.decodeZigzagValue(3));
         Assert.assertEquals(-1, Bits.Decoder.decodeZigzagValue(1));
+    }
+
+    @Test
+    public void testSnowflakeIdWorker() {
+        SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
+        for (int i = 0; i < 1000; i++) {
+            long id = idWorker.nextId();
+            System.out.println(id);
+        }
     }
 }
